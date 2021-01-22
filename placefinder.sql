@@ -29,7 +29,8 @@ CREATE TABLE `Reservation` (
   `timeStamp` datetime DEFAULT NULL,
   PRIMARY KEY (`userId`,`slotId`,`roomId`),
   KEY `fk_Reservation_1_idx` (`slotId`,`roomId`),
-  CONSTRAINT `fk_Reservation_1` FOREIGN KEY (`slotId`, `roomId`) REFERENCES `Slot` (`id`, `idRoom`)
+  CONSTRAINT `fk_Reservation_1` FOREIGN KEY (`slotId`, `roomId`) REFERENCES `Slot` (`id`, `idRoom`),
+  CONSTRAINT `fk_Reservation_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -77,7 +78,6 @@ DROP TABLE IF EXISTS `Slot`;
 CREATE TABLE `Slot` (
   `id` int NOT NULL,
   `idRoom` varchar(45) NOT NULL,
-  `duration` int NOT NULL DEFAULT '2',
   `occupiedSeats` int DEFAULT '0',
   `status` tinyint DEFAULT '0',
   PRIMARY KEY (`id`,`idRoom`),
@@ -92,7 +92,7 @@ CREATE TABLE `Slot` (
 
 LOCK TABLES `Slot` WRITE;
 /*!40000 ALTER TABLE `Slot` DISABLE KEYS */;
-INSERT INTO `Slot` VALUES (0,'a11',2,0,0),(0,'a12',2,0,0),(0,'a13',2,0,0),(0,'a14',2,0,0),(0,'b21',2,0,0),(0,'b22',2,0,0),(0,'b31',2,0,0),(0,'b34',2,0,0),(0,'f1',2,0,0),(0,'f2',2,0,0),(0,'f3',2,0,0),(0,'f4',2,0,0),(0,'f5',2,0,0),(0,'f6',2,0,0),(1,'a11',2,0,0),(1,'a12',2,0,0),(1,'a13',2,0,0),(1,'a14',2,0,0),(1,'b21',2,0,0),(1,'b22',2,0,0),(1,'b31',2,0,0),(1,'b34',2,0,0),(1,'f1',2,0,0),(1,'f2',2,0,0),(1,'f3',2,0,0),(1,'f4',2,0,0),(1,'f5',2,0,0),(1,'f6',2,0,0),(2,'a11',2,0,0),(2,'a12',2,0,0),(2,'a13',2,0,0),(2,'a14',2,0,0),(2,'b21',2,0,0),(2,'b22',2,0,0),(2,'b31',2,0,0),(2,'b34',2,0,0),(2,'f1',2,0,0),(2,'f2',2,0,0),(2,'f3',2,0,0),(2,'f4',2,0,0),(2,'f5',2,0,0),(2,'f6',2,0,0),(3,'a11',2,0,0),(3,'a12',2,0,0),(3,'a13',2,0,0),(3,'a14',2,0,0),(3,'b21',2,0,0),(3,'b22',2,0,0),(3,'b31',2,0,0),(3,'b34',2,0,0),(3,'f1',2,0,0),(3,'f2',2,0,0),(3,'f3',2,0,0),(3,'f4',2,0,0),(3,'f5',2,0,0),(3,'f6',2,0,0),(4,'a11',2,0,0),(4,'a12',2,0,0),(4,'a13',2,0,0),(4,'a14',2,0,0),(4,'b21',2,0,0),(4,'b22',2,0,0),(4,'b31',2,0,0),(4,'b34',2,0,0),(4,'f1',2,0,0),(4,'f2',2,0,0),(4,'f3',2,0,0),(4,'f4',2,0,0),(4,'f5',2,0,0),(4,'f6',2,0,0);
+INSERT INTO `Slot` VALUES (0,'a11',0,0),(0,'a12',0,0),(0,'a13',0,0),(0,'a14',0,0),(0,'b21',0,0),(0,'b22',0,0),(0,'b31',0,0),(0,'b34',0,0),(0,'f1',0,0),(0,'f2',0,0),(0,'f3',0,0),(0,'f4',0,0),(0,'f5',0,0),(0,'f6',0,0),(1,'a11',0,0),(1,'a12',0,0),(1,'a13',0,0),(1,'a14',0,0),(1,'b21',0,0),(1,'b22',0,0),(1,'b31',0,0),(1,'b34',0,0),(1,'f1',0,0),(1,'f2',0,0),(1,'f3',0,0),(1,'f4',0,0),(1,'f5',0,0),(1,'f6',0,0),(2,'a11',0,0),(2,'a12',0,0),(2,'a13',0,0),(2,'a14',0,0),(2,'b21',0,0),(2,'b22',0,0),(2,'b31',0,0),(2,'b34',0,0),(2,'f1',0,0),(2,'f2',0,0),(2,'f3',0,0),(2,'f4',0,0),(2,'f5',0,0),(2,'f6',0,0),(3,'a11',0,0),(3,'a12',0,0),(3,'a13',0,0),(3,'a14',0,0),(3,'b21',0,0),(3,'b22',0,0),(3,'b31',0,0),(3,'b34',0,0),(3,'f1',0,0),(3,'f2',0,0),(3,'f3',0,0),(3,'f4',0,0),(3,'f5',0,0),(3,'f6',0,0),(4,'a11',0,0),(4,'a12',0,0),(4,'a13',0,0),(4,'a14',0,0),(4,'b21',0,0),(4,'b22',0,0),(4,'b31',0,0),(4,'b34',0,0),(4,'f1',0,0),(4,'f2',0,0),(4,'f3',0,0),(4,'f4',0,0),(4,'f5',0,0),(4,'f6',0,0);
 /*!40000 ALTER TABLE `Slot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,32 +122,6 @@ LOCK TABLES `User` WRITE;
 INSERT INTO `User` VALUES (1,'aaa1','test',0,0),(2,'aaa2','test',0,0),(3,'bbb1','test',1,0),(4,'admin1','test',2,0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user` (
-  `id` int NOT NULL,
-  `covid_notification` bit(1) NOT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `privilege` int DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -158,4 +132,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-22 17:54:06
+-- Dump completed on 2021-01-22 20:06:16

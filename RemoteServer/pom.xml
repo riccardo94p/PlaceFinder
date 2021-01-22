@@ -61,6 +61,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>
+                        -Djava.security.manager
+                        -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/RemoteServer/myprogram.policy
+                        <!---Djava.rmi.server.codebase=http://localhost:1099/RemoteServer-->
+                    </jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
