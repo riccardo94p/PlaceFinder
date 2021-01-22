@@ -1,0 +1,6 @@
+sudo apt install mysql-server
+sudo mysql
+create user 'test'@'localhost' identified by 'test';
+grant all privileges on *.* to 'test'@'localhost' with grant option;
+flush privileges;
+exit;

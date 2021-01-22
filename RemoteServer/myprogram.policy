@@ -1,0 +1,5 @@
+// permissions granted
+
+grant codeBase "file:/-" {
+        permission java.security.AllPermission;
+    };

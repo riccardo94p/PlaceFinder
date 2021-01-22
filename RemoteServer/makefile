@@ -1,4 +1,4 @@
 .PHONY: all clean
 
 all:
-	mvn -q spring-boot:run
+	mvn -q spring-boot:run 

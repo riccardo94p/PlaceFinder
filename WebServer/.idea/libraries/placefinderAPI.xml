@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="placefinderAPI">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/java/com/example/WebServer/placefinderAPI.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
