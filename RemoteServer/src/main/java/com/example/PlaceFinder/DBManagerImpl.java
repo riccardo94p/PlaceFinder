@@ -1,6 +1,8 @@
 package com.example.PlaceFinder;
 
+import com.example.PlaceFinder.entity.Reservation;
 import com.example.PlaceFinder.entity.User;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,7 +10,6 @@ import java.util.List;
 public class DBManagerImpl implements DBManager {
     private static EntityManager entityManager;
     private static EntityManagerFactory factory;
-    private String loggedUser=null;
 
     public DBManagerImpl() {
         factory = Persistence.createEntityManagerFactory("placefinder");
@@ -16,6 +17,49 @@ public class DBManagerImpl implements DBManager {
 
     public void exit() {
         factory.close();
+    }
+
+    public boolean login(String username, String password) {
+        List<User> tmpUsers = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Query q = entityManager.createNativeQuery("SELECT * FROM User u WHERE u.username=? AND u.password=?", User.class);
+            q.setParameter(1, username);
+            q.setParameter(2, password);
+            tmpUsers = q.getResultList();
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the login.");
+        }
+        finally {
+            entityManager.close();
+        }
+        if(tmpUsers == null) return false;
+        else return true;
+    }
+
+    public void insertUser(User u) {
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            User exists = entityManager.find(User.class, u.getIdUser());
+            if(exists != null)
+                System.out.println("Error: User already registered!");
+            else
+                entityManager.persist(u);
+            entityManager.getTransaction().commit();
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the user registration.");
+        }
+        finally {
+            entityManager.close();
+        }
     }
 
     public List<User> getUser() {
@@ -40,25 +84,23 @@ public class DBManagerImpl implements DBManager {
         return tmpUsers;
     }
 
+    //browses a specific user's loans (reserved to librarians only)
+    public List<Reservation> browseUserReservations(String userid) {
+        List<Reservation> r = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=\"aaa1\";", Reservation.class);
+            r = q.getResultList();
 
-    /*@Autowired
-    private UserRepository userRepository;
-
-    private int howManyTimes = 0;
-
-    public int howManyTimes() {
-        return howManyTimes;
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the browseUserReservations()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
     }
-
-    public String getHelloWorld() {
-        howManyTimes++;
-        return "Hello World! "+howManyTimes+" calls.";
-    }
-
-    public String getUsers() {
-        userRepository.findAll().forEach(user->{
-            System.out.println(user.getUsername());
-        });
-        return "";
-    }*/
 }

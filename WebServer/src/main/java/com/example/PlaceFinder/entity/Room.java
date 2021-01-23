@@ -4,18 +4,45 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 @ToString
+//@Table(name = "room")
 public class Room implements Serializable {
     @Id
-    private Integer id;
+    private String idRoom;
 
-    private Integer numSeats;
-    private Integer capacity;
+    private int numSeats;
+    private int capacity;
+/*
+    @OneToMany(mappedBy = "room") //references room field in the Slot class
+    private List<Slot> slots = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room") //references room field in the Reservation class
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        Room that = (Room) o;
+        return Objects.equals( idRoom, that.getIdRoom() );
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }*/
 }
