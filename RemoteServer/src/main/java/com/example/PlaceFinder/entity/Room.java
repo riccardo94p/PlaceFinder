@@ -1,8 +1,6 @@
 package com.example.PlaceFinder.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -21,6 +21,7 @@ public class Room implements Serializable {
 
     private int numSeats;
     private int capacity;
+
 /*
     @OneToMany(mappedBy = "room") //references room field in the Slot class
     private List<Slot> slots = new ArrayList<>();

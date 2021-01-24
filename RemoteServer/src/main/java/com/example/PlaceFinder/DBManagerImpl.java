@@ -1,6 +1,7 @@
 package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
+import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.User;
 import org.hibernate.Hibernate;
 
@@ -84,15 +85,15 @@ public class DBManagerImpl implements DBManager {
         return tmpUsers;
     }
 
-    //browses a specific user's loans (reserved to librarians only)
+    // get user reservations
     public List<Reservation> browseUserReservations(String userid) {
         List<Reservation> r = null;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=\"aaa1\";", Reservation.class);
+            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId = :userId;", Reservation.class);
+            q.setParameter("userId", userid);
             r = q.getResultList();
-
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -103,4 +104,50 @@ public class DBManagerImpl implements DBManager {
         }
         return r;
     }
+
+    public List<Reservation> searchWeeklyReservations(String userId){
+        List<Reservation> r = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation r WHERE r.userId = :userId AND r.reservationDay between date_sub(now(),INTERVAL 7 DAY) and now();", Reservation.class);
+            q.setParameter("userId", userId);
+            r = q.getResultList();
+            entityManager.getTransaction().commit();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the notificateCovid()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
+    }
+
+    /*
+    public int notificateCovid(String userId){
+        List<Reservation> r = searchWeeklyReservations(userId);
+        if (r == null)
+            return 0; // no reservations found in the last week
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT DISTINCT r.userId FROM placefinder.Reservation r WHERE r.reservationDay IN (:reservationDays) AND r.slotId IN (:slots) AND r.roomId IN ()")
+        }
+    }
+     */
+
+    /*
+    public int createRoom(String idRoom, int numSeats, int capacity){
+        Room newRoom = new Room(idRoom, numSeats, capacity);
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Room exist = entityManager.find()
+        }
+    }
+    */
+
+
+
 }
