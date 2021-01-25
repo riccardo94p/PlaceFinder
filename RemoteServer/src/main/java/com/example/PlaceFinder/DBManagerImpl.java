@@ -115,16 +115,17 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
-    //browses a specific user's loans (reserved to librarians only)
+    // get user reservations
     public List<Reservation> browseUserReservations(String userid) {
         List<Reservation> r = null;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
+
             Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=?", Reservation.class);
             q.setParameter(1, userid);
-            r = q.getResultList();
 
+            r = q.getResultList();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
