@@ -1,6 +1,7 @@
 package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
+import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.User;
 import org.hibernate.Hibernate;
 
@@ -84,15 +85,15 @@ public class DBManagerImpl implements DBManager {
         return tmpUsers;
     }
 
-    //browses a specific user's loans (reserved to librarians only)
+    // get user reservations
     public List<Reservation> browseUserReservations(String userid) {
         List<Reservation> r = null;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=\"aaa1\";", Reservation.class);
+            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId = :userId;", Reservation.class);
+            q.setParameter("userId", userid);
             r = q.getResultList();
-
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -103,4 +104,5 @@ public class DBManagerImpl implements DBManager {
         }
         return r;
     }
+
 }
