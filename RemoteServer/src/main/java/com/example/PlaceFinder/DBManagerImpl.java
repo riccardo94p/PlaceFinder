@@ -105,4 +105,33 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    //reserved to admin only
+    public String addRoom(String idRoom, int numSeats, float capacity) {
+        String result = "";
+        Room r = new Room();
+        r.setIdRoom(idRoom);
+        r.setNumSeats(numSeats);
+        r.setCapacity(capacity);
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Room exists = entityManager.find(Room.class, idRoom);
+            if(exists != null)
+                result ="Room already registered.";
+            else {
+                entityManager.persist(r);
+                result = "Room successfully added.";
+            }
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            result = "A problem occurred with the room addition.";
+        }
+        finally {
+            entityManager.close();
+        }
+        return result;
+    }
+
 }
