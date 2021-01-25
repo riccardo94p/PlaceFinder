@@ -40,9 +40,9 @@ public class Room implements Serializable {
         Room that = (Room) o;
         return Objects.equals( idRoom, that.getIdRoom() );
     }
-
+*/
     @Override
     public int hashCode() {
         return 31;
-    }*/
+    }
 }

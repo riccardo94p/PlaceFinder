@@ -1,10 +1,12 @@
 package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
+import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.User;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+
+import java.util.Date;
 import java.util.List;
 
 public class DBManagerImpl implements DBManager {
@@ -42,46 +44,75 @@ public class DBManagerImpl implements DBManager {
         else return true;
     }
 
-    public void insertUser(User u) {
+    public boolean userReservation(String userid, int slotid, String roomid, Date date) {
+        boolean r = true;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            User exists = entityManager.find(User.class, u.getIdUser());
-            if(exists != null)
-                System.out.println("Error: User already registered!");
-            else
-                entityManager.persist(u);
-            entityManager.getTransaction().commit();
+            Query q = entityManager.createNativeQuery("INSERT INTO Reservation VALUES (?,?,?,?)");
+            q.setParameter(1, userid);
+            q.setParameter(2, slotid);
+            q.setParameter(3, roomid);
+            q.setParameter(4, date);
 
+            entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("A problem occurred with the user registration.");
+            System.out.println("A problem occurred with the userReservation()");
+            r = false;
         }
         finally {
             entityManager.close();
         }
+        return r;
     }
 
-    public List<User> getUser() {
-        List<User> tmpUsers = null;
-
+    public boolean professorReservation(String userid, int slotid, String roomid, Date date) {
+        //TODO: bisogna controllare che non sia già prenotata da un altro prof
+        userReservation(userid, slotid, roomid, date);
+        boolean r = true;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-
-            Query q = entityManager.createNativeQuery("SELECT * FROM User", User.class);
-            tmpUsers = q.getResultList();
+            Query q = entityManager.createNativeQuery("DELETE FROM Reservation WHERE userId != ? AND slotId=? AND roomId=? AND reservationDate=?");
+            q.setParameter(1, userid);
+            q.setParameter(2, slotid);
+            q.setParameter(3, roomid);
+            q.setParameter(4, date);
 
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("A problem occurred with the DBManager.findUser().");
+            System.out.println("A problem occurred with the userReservation()");
+            r = false;
         }
         finally {
             entityManager.close();
         }
-        System.out.println(tmpUsers);
-        return tmpUsers;
+        return r;
+    }
+
+    public boolean deleteUserReservation(String userid, int slotid, String roomid, Date date) {
+        boolean r = true;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("DELETE FROM Reservation WHERE userId=? AND slotId=? AND roomId=? AND reservationDate=?");
+            q.setParameter(1, userid);
+            q.setParameter(2, slotid);
+            q.setParameter(3, roomid);
+            q.setParameter(4, date);
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the userReservation()");
+            r = false;
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
     }
 
     //browses a specific user's loans (reserved to librarians only)
@@ -90,13 +121,78 @@ public class DBManagerImpl implements DBManager {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=\"aaa1\";", Reservation.class);
+            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=?", Reservation.class);
+            q.setParameter(1, userid);
             r = q.getResultList();
 
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the browseUserReservations()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
+    }
+
+    //deletes all reservatons for a given room
+    private void deleteReservations(String roomid) {
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Query q = entityManager.createNativeQuery("DELETE FROM Reservation r WHERE r.roomId=? AND r.reservationDate >= CURRENT_DATE()");
+            q.setParameter(1, roomid);
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the deleteReservations()");
+        }
+        finally {
+            entityManager.close();
+        }
+    }
+
+    //get current capacity for a specific room
+    private float getRoomCapacity(String roomid) {
+        float prevCapacity = 0;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            prevCapacity = entityManager.find(Room.class, roomid).getCapacity();
+            entityManager.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getRoomCapacity()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return prevCapacity;
+    }
+
+    public boolean changeCapacity(String roomid, float capacity) {
+        boolean r = true;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            float previousCapacity = getRoomCapacity(roomid);
+            Query q2 = entityManager.createNativeQuery("UPDATE Room SET capacity=? WHERE (idRoom=?)");
+            q2.setParameter(1, capacity);
+            q2.setParameter(2, roomid);
+            q2.executeUpdate();
+
+            //In seguito a riduzione capienza, delete di tutte le prenotazioni degli utenti
+            if(previousCapacity > capacity) {
+                deleteReservations(roomid);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the changeCapacity()");
+            r = false;
         }
         finally {
             entityManager.close();
