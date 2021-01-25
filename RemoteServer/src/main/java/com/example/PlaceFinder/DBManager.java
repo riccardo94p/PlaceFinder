@@ -11,5 +11,8 @@ public interface DBManager {
     List<User> getUser();
     boolean login(String username, String password);
     void insertUser(User u);
-    List<Reservation> browseUserReservations(String userid);
+    List<Reservation> browseUserReservations(String userId);
+    List<User> findCovidContact (String userId);
+    int updateCovidNotification(List<User> userList, boolean newNotification);
+    int notifyCovidContact(String userId);
 }
