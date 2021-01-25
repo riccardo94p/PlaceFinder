@@ -1,0 +1,23 @@
+Creare una cartella e mettere al suo interno i file Erlang (da fare solo la prima volta che si avvia il server)
+
+Spostarsi dentro la cartella:
+cd <path cartella>
+
+Creare una cartella che conterrà i dati del database (da fare solo la prima volta che si avvia il server):
+mkdir Database
+
+Aprire una shell Erlang configurata per la comunicazione distribuita e l'utilizzo di mnesia:
+erl -name board_server@<ip server> -setcookie 'board' -mnesia dir '"<path cartella database>"'
+
+All'interno della shell Erlang compilare i file board_server.erl e db_manager.erl (da fare solo la prima volta che si avvia il server):
+> c(db_manager).
+> c(board_server).
+
+Creare il database (da fare solo la prima volta che si avvia il server):
+> db_manager:init().
+
+Avviare il server:
+> board_server:start_server().
+
+Spegnere il server:
+> board_server:stop_server().
