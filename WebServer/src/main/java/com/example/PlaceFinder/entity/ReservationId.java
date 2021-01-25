@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class ReservationId implements Serializable {
     @Column
     private String roomId;
     @Column
-    private Timestamp timeStamp;
+    private Date reservationDate;
 
     public ReservationId() {
     }
@@ -33,11 +34,11 @@ public class ReservationId implements Serializable {
             return false;
 
         ReservationId that = (ReservationId) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(slotId, that.slotId) && Objects.equals(roomId, that.roomId) && Objects.equals(timeStamp, that.timeStamp);
+        return Objects.equals(userId, that.userId) && Objects.equals(slotId, that.slotId) && Objects.equals(roomId, that.roomId) && Objects.equals(reservationDate, that.reservationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, slotId, roomId, timeStamp);
+        return Objects.hash(userId, slotId, roomId, reservationDate);
     }
 }

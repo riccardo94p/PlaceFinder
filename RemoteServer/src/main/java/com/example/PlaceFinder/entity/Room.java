@@ -20,7 +20,8 @@ public class Room implements Serializable {
     private String idRoom;
 
     private int numSeats;
-    private int capacity;
+
+    private float capacity;
 
 /*
     @OneToMany(mappedBy = "room") //references room field in the Slot class

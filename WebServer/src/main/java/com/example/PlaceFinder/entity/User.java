@@ -22,8 +22,7 @@ public class User implements Serializable {
     private String password;
     private int privilege;
     private boolean covidNotification;
-
-    /*
+/*
     @OneToMany(mappedBy = "user") //maps the user field in the Reservation class
     private List<Reservation> reservations = new ArrayList<>();
 
