@@ -12,4 +12,5 @@ public interface DBManager {
     boolean login(String username, String password);
     void insertUser(User u);
     List<Reservation> browseUserReservations(String userid);
+    String addRoom(String idRoom, int numSeats, float capacity);
 }
