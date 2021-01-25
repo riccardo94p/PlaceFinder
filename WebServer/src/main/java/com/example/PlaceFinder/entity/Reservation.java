@@ -15,8 +15,7 @@ import java.util.Objects;
 public class Reservation implements Serializable {
     @EmbeddedId
     private ReservationId id;
-
-    /*
+/*
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId") //maps the userId field in the ReservationId class
     private User user;

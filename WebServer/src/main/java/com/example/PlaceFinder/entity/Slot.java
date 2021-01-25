@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +17,11 @@ import java.util.Objects;
 @ToString
 //@Table(name = "slot")
 public class Slot implements Serializable {
-    @EmbeddedId
-    private SlotId idSlot;
+    @Id
+    private Integer idSlot;
 
-    private int occupiedSeats;
-    private boolean status;
+    private Time startTime;
+    private Time endTime;
 /*
     @ManyToOne
     @MapsId("idRoom") //maps idRoom field in SlotId class
