@@ -21,7 +21,7 @@ public class WebServerMainApplication {
         if(System.getSecurityManager()==null)
             System.setSecurityManager(new SecurityManager());
 
-        System.setProperty("java.security.policy","file:/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy");
+        //System.setProperty("java.security.policy","file:/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy");
         System.out.println("[SECURITY POLICY]: "+System.getProperty("java.security.policy"));
         SpringApplication.run(WebServerMainApplication.class, args);
     }
