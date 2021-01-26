@@ -7,6 +7,7 @@ import java.util.*;
 public interface DBManager {
     
     void exit();
+    User getUser(String username);
     boolean login(String username, String password);
     List<Reservation> browseUserReservations(String userId);
     List<User> findCovidContact (String userId);

@@ -12,11 +12,12 @@ public class RMIServer {
         return new DBManagerImpl();
     }
 
+    //@Bean(name = "a")
+    //UserDetailsService UserDetailsService() { return new UserDetailsManagerImpl(); }
+
     @Bean
-    RmiServiceExporter exporter(DBManager implementation) {
-        // Expose a service via RMI. Remote object URL is:
-        // rmi://<HOST>:<PORT>/<SERVICE_NAME>
-        // 1099 is the default port
+    RmiServiceExporter dbServiceExporter(DBManager implementation) {
+        // Expose a service via RMI. Remote object URL is rmi://<HOST>:<PORT>/<SERVICE_NAME>
 
         Class<DBManager> serviceInterface = DBManager.class;
         RmiServiceExporter exporter = new RmiServiceExporter();
@@ -27,6 +28,18 @@ public class RMIServer {
 
         return exporter;
     }
+
+    /*@Bean
+    RmiServiceExporter loginServiceExporter(@Qualifier("a") UserDetailsService implementation) {
+        Class<UserDetailsService> serviceInterface = UserDetailsService.class;
+        RmiServiceExporter exporter = new RmiServiceExporter();
+        exporter.setServiceName("LoginService"); //set service name
+        exporter.setService(implementation); //set service
+        exporter.setServiceInterface(serviceInterface);
+        exporter.setRegistryPort(1099);
+
+        return exporter;
+    }*/
 
     public static void main(String[] args) {
         if(System.getSecurityManager()==null)

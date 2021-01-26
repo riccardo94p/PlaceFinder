@@ -21,6 +21,23 @@ public class DBManagerImpl implements DBManager {
         factory.close();
     }
 
+    public User getUser(String username) {
+        User u = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            u = entityManager.find(User.class, username);
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getUser().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return u;
+    }
     public boolean login(String username, String password) {
         List<User> tmpUsers = null;
         try {
