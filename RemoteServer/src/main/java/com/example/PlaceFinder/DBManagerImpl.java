@@ -1,7 +1,6 @@
 package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
-import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.User;
 
 import javax.persistence.*;
@@ -41,7 +40,9 @@ public class DBManagerImpl implements DBManager {
             entityManager.close();
         }
         if(tmpUsers == null) return false;
-        else return true;
+        if(tmpUsers.get(0).getCovidNotification())
+            updateCovidNotification(tmpUsers, false);
+        return true;
     }
 
     public boolean userReservation(String userid, int slotid, String roomid, Date date) {
@@ -116,20 +117,46 @@ public class DBManagerImpl implements DBManager {
     }
 
     // get user reservations
-    public List<Reservation> browseUserReservations(String userid) {
+    public List<Reservation> browseUserReservations(String userId) {
         List<Reservation> r = null;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-
-            Query q = entityManager.createNativeQuery("SELECT * FROM placefinder.Reservation WHERE userId=?", Reservation.class);
-            q.setParameter(1, userid);
-
+            Query q = entityManager.createNativeQuery("SELECT * FROM Reservation R WHERE R.userId = ?;", Reservation.class);
+            q.setParameter(1, userId);
             r = q.getResultList();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the browseUserReservations()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
+    }
+
+
+    public List<User> findCovidContact(String userId){
+        List<User> r = null;
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT DISTINCT UU.*\n" +
+                    "FROM User UU\n" +
+                    "INNER JOIN (SELECT RR.*\n" +
+                                "FROM Reservation RR \n" +
+                                "NATURAL JOIN ( SELECT T.slotId, T.roomId, T.reservationDate\n" +
+                                                "FROM Reservation T\n" +
+                                                "WHERE T.userId = ? AND\n" +
+                                                "T.reservationDate >= (CURRENT_DATE() - INTERVAL 1 WEEK )) as T) as P\n" +
+                    "ON UU.username = P.userId", User.class);
+            q.setParameter(1, userId);
+            r = q.getResultList();
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the findCovidContact()");
         }
         finally {
             entityManager.close();
@@ -166,6 +193,23 @@ public class DBManagerImpl implements DBManager {
         return result;
     }
 
+    public int updateCovidNotification(List<User> userList, boolean newNotification){
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            for(User x : userList){
+                x.setCovidNotification(newNotification);
+                entityManager.merge(x);
+            }
+            entityManager.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the updateCovidNotification()");
+            return 1;
+        }
+        return 0;
+    }
+
     //deletes all reservatons for a given room
     private void deleteReservations(String roomid) {
 
@@ -183,6 +227,14 @@ public class DBManagerImpl implements DBManager {
         finally {
             entityManager.close();
         }
+    }
+
+    public int notifyCovidContact(String userId){
+        List<User> r = findCovidContact(userId);
+        if(r == null)
+            return 0; //no update needed
+        int result = updateCovidNotification(r, true);
+        return result;
     }
 
     //get current capacity for a specific room
