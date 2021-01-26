@@ -28,11 +28,13 @@ CREATE TABLE `Reservation` (
   `userId` varchar(45) NOT NULL,
   `slotId` int NOT NULL,
   `roomId` varchar(45) NOT NULL,
-  `timeStamp` datetime NOT NULL,
-  PRIMARY KEY (`userId`,`roomId`,`timeStamp`,`slotId`),
-  KEY `fk_reservation_2_idx` (`slotId`,`roomId`),
+  `reservationDate` date NOT NULL,
+  PRIMARY KEY (`userId`,`roomId`,`reservationDate`,`slotId`),
+  KEY `fk_Reservation_2_idx` (`slotId`),
+  KEY `fk_Reservation_3_idx` (`roomId`),
   CONSTRAINT `fk_reservation_1` FOREIGN KEY (`userId`) REFERENCES `User` (`username`),
-  CONSTRAINT `fk_reservation_2` FOREIGN KEY (`slotId`, `roomId`) REFERENCES `Slot` (`idSlot`, `idRoom`)
+  CONSTRAINT `fk_reservation_2` FOREIGN KEY (`slotId`) REFERENCES `Slot` (`idSlot`),
+  CONSTRAINT `fk_Reservation_3` FOREIGN KEY (`roomId`) REFERENCES `Room` (`idRoom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,7 +44,7 @@ CREATE TABLE `Reservation` (
 
 LOCK TABLES `Reservation` WRITE;
 /*!40000 ALTER TABLE `Reservation` DISABLE KEYS */;
-INSERT INTO `Reservation` VALUES ('aaa1',0,'a11','2021-01-23 20:00:00'),('bbb1',1,'b21','2021-01-23 19:30:00');
+INSERT INTO `Reservation` VALUES ('aaa1',0,'a11','2021-01-23'),('aaa2',0,'a11','2021-01-23'),('aaa3',0,'a11','2021-01-23'),('aaa6',0,'a11','2021-01-23'),('zzzz',0,'a11','2021-01-20'),('aaa2',1,'a11','2021-01-23'),('bbb1',1,'b21','2021-01-23'),('aaa1',3,'f6','2021-01-20'),('aaa4',3,'f6','2021-01-20'),('aaa1',4,'f1','2021-01-16'),('aaa2',4,'f1','2021-01-16');
 /*!40000 ALTER TABLE `Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +58,7 @@ DROP TABLE IF EXISTS `Room`;
 CREATE TABLE `Room` (
   `idRoom` varchar(45) NOT NULL,
   `numSeats` int DEFAULT NULL,
-  `capacity` int DEFAULT '1',
+  `capacity` float DEFAULT '1',
   PRIMARY KEY (`idRoom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -80,12 +82,9 @@ DROP TABLE IF EXISTS `Slot`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Slot` (
   `idSlot` int NOT NULL,
-  `idRoom` varchar(45) NOT NULL,
-  `occupiedSeats` int DEFAULT '0',
-  `status` tinyint DEFAULT '0',
-  PRIMARY KEY (`idSlot`,`idRoom`),
-  KEY `fk_Slot_1_idx` (`idRoom`),
-  CONSTRAINT `fk_Slot_1` FOREIGN KEY (`idRoom`) REFERENCES `Room` (`idRoom`)
+  `startTime` time DEFAULT NULL,
+  `endTime` time DEFAULT NULL,
+  PRIMARY KEY (`idSlot`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -95,7 +94,7 @@ CREATE TABLE `Slot` (
 
 LOCK TABLES `Slot` WRITE;
 /*!40000 ALTER TABLE `Slot` DISABLE KEYS */;
-INSERT INTO `Slot` VALUES (0,'a11',0,0),(0,'a12',0,0),(0,'a13',0,0),(0,'a14',0,0),(0,'b21',0,0),(0,'b22',0,0),(0,'b31',0,0),(0,'b34',0,0),(0,'f1',0,0),(0,'f2',0,0),(0,'f3',0,0),(0,'f4',0,0),(0,'f5',0,0),(0,'f6',0,0),(1,'a11',0,0),(1,'a12',0,0),(1,'a13',0,0),(1,'a14',0,0),(1,'b21',0,0),(1,'b22',0,0),(1,'b31',0,0),(1,'b34',0,0),(1,'f1',0,0),(1,'f2',0,0),(1,'f3',0,0),(1,'f4',0,0),(1,'f5',0,0),(1,'f6',0,0),(2,'a11',0,0),(2,'a12',0,0),(2,'a13',0,0),(2,'a14',0,0),(2,'b21',0,0),(2,'b22',0,0),(2,'b31',0,0),(2,'b34',0,0),(2,'f1',0,0),(2,'f2',0,0),(2,'f3',0,0),(2,'f4',0,0),(2,'f5',0,0),(2,'f6',0,0),(3,'a11',0,0),(3,'a12',0,0),(3,'a13',0,0),(3,'a14',0,0),(3,'b21',0,0),(3,'b22',0,0),(3,'b31',0,0),(3,'b34',0,0),(3,'f1',0,0),(3,'f2',0,0),(3,'f3',0,0),(3,'f4',0,0),(3,'f5',0,0),(3,'f6',0,0),(4,'a11',0,0),(4,'a12',0,0),(4,'a13',0,0),(4,'a14',0,0),(4,'b21',0,0),(4,'b22',0,0),(4,'b31',0,0),(4,'b34',0,0),(4,'f1',0,0),(4,'f2',0,0),(4,'f3',0,0),(4,'f4',0,0),(4,'f5',0,0),(4,'f6',0,0);
+INSERT INTO `Slot` VALUES (0,'09:00:00','11:00:00'),(1,'11:00:00','13:00:00'),(2,'14:00:00','16:00:00'),(3,'16:00:00','18:00:00'),(4,'18:00:00','20:00:00');
 /*!40000 ALTER TABLE `Slot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,7 +120,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES ('aaa1','test',0,0),('aaa2','test',0,0),('admin1','test',2,0),('bbb1','test',1,0),('zzzz','test',0,0);
+INSERT INTO `User` VALUES ('aaa1','test',0,0),('aaa2','test',0,0),('aaa3','test',0,0),('aaa4','test',0,0),('aaa5','test',0,0),('aaa6','test',0,0),('aaa7','test',0,0),('admin1','test',2,0),('bbb1','test',1,0),('zzzz','test',0,0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -134,4 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-24 12:12:40
+-- Dump completed on 2021-01-25 10:53:55

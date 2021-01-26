@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+//@Component
 public class BoardClient {
     private final String serverNodeName = "board_server@192.168.1.59";
     private final String serverName = "board_server";

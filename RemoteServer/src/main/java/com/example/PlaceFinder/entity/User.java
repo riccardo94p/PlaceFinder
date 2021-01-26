@@ -52,4 +52,6 @@ public class User implements Serializable {
     public int hashCode() {
         return 41;
     }
+
+    public boolean getCovidNotification(){ return this.covidNotification;}
 }
