@@ -56,7 +56,7 @@ public class DBManagerImpl implements DBManager {
             q.setParameter(2, slotid);
             q.setParameter(3, roomid);
             q.setParameter(4, date);
-
+            q.executeUpdate();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();

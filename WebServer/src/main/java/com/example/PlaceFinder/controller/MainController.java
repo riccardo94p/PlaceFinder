@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.sql.Date;
 
 import java.util.List;
 
@@ -16,13 +17,23 @@ public class MainController {
     @Autowired
     private ApplicationContext ctx;
 
-    @GetMapping("/test")
-    public @ResponseBody String test() {
+    @GetMapping("/browsereservation")
+    public @ResponseBody void browsereservation() {
         DBManager service = ctx.getBean(DBManager.class);
-        //List<User> result = service.getUser();
         List<Reservation> r = service.browseUserReservations("aaa1");
-        System.out.println("[RISPOSTA 1]: "+r);
-        return "";
+        for(Reservation x: r){
+            System.out.println("Reservations: " + x.getId().getReservationDate() + " - " + x.getId().getRoomId() + " - " + x.getId().getSlotId());
+        }
+    }
+
+    @GetMapping("/reserve")
+    public @ResponseBody void reserve() {
+        DBManager service = ctx.getBean(DBManager.class);
+        Date d = Date.valueOf("2021-01-27");
+        boolean result = service.userReservation("aaa1", 0, "b12", d);
+        if(result){
+            List<Reservation> r = service.browseUserReservations("aaa1");
+        }
     }
 
     @RequestMapping("/main")
