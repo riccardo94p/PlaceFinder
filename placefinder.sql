@@ -44,7 +44,7 @@ CREATE TABLE `Reservation` (
 
 LOCK TABLES `Reservation` WRITE;
 /*!40000 ALTER TABLE `Reservation` DISABLE KEYS */;
-INSERT INTO `Reservation` VALUES ('aaa1',0,'a11','2021-01-23'),('aaa2',0,'a11','2021-01-23'),('aaa3',0,'a11','2021-01-23'),('aaa6',0,'a11','2021-01-23'),('zzzz',0,'a11','2021-01-20'),('aaa2',1,'a11','2021-01-23'),('bbb1',1,'b21','2021-01-23'),('aaa1',3,'f6','2021-01-20'),('aaa4',3,'f6','2021-01-20'),('aaa1',4,'f1','2021-01-16'),('aaa2',4,'f1','2021-01-16');
+INSERT INTO `Reservation` VALUES ('aaa1',0,'a11','2021-01-23'),('aaa2',0,'a11','2021-01-23'),('aaa3',0,'a11','2021-01-23'),('aaa6',0,'a11','2021-01-23'),('zzzz',0,'a11','2021-01-20'),('aaa2',1,'a11','2021-01-23'),('bbb1',1,'b21','2021-01-23'),('bbb1',1,'f4','2021-01-10'),('aaa1',3,'f6','2021-01-20'),('aaa4',3,'f6','2021-01-20'),('aaa1',4,'f1','2021-01-16'),('aaa2',4,'f1','2021-01-10');
 /*!40000 ALTER TABLE `Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
   `username` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  `privilege` int NOT NULL DEFAULT '0',
+  `role` varchar(45) NOT NULL DEFAULT 'STUDENT',
   `covidNotification` tinyint DEFAULT '0',
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -120,7 +120,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES ('aaa1','test',0,0),('aaa2','test',0,0),('aaa3','test',0,0),('aaa4','test',0,0),('aaa5','test',0,0),('aaa6','test',0,0),('aaa7','test',0,0),('admin1','test',2,0),('bbb1','test',1,0),('zzzz','test',0,0);
+INSERT INTO `User` VALUES ('aaa1','test','STUDENT',0),('aaa2','test','STUDENT',0),('aaa3','test','STUDENT',0),('aaa4','test','STUDENT',0),('aaa5','test','STUDENT',0),('aaa6','test','STUDENT',0),('aaa7','test','STUDENT',0),('admin1','test','ADMIN',0),('bbb1','test','PROF',0),('zzzz','test','STUDENT',0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -133,4 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-25 10:53:55
+-- Dump completed on 2021-01-26 22:02:06
