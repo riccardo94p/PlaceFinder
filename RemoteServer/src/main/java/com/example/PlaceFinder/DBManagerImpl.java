@@ -1,6 +1,7 @@
 package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
+import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.User;
 
 import javax.persistence.*;

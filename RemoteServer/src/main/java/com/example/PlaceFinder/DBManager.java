@@ -8,7 +8,6 @@ public interface DBManager {
     
     void exit();
     boolean login(String username, String password);
-    void insertUser(User u);
     List<Reservation> browseUserReservations(String userId);
     List<User> findCovidContact (String userId);
     int updateCovidNotification(List<User> userList, boolean newNotification);
