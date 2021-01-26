@@ -32,7 +32,7 @@ public class RMIServer {
         if(System.getSecurityManager()==null)
             System.setSecurityManager(new SecurityManager());
 
-        System.setProperty("java.security.policy","file:/home/riccardo/Scrivania/PlaceFinder/RemoteServer/myprogram.policy");
+        //System.setProperty("java.security.policy","file:/home/riccardo/Scrivania/PlaceFinder/RemoteServer/myprogram.policy");
         System.out.println("[SECURITY POLICY]: "+System.getProperty("java.security.policy"));
         SpringApplication.run(RMIServer.class, args);
     }
