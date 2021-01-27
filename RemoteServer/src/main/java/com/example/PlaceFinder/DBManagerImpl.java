@@ -86,8 +86,40 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    private boolean checkProfessorReservation(int slotid, String roomid, Date date) {
+        boolean result = false;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query query = entityManager.createNativeQuery("SELECT UU.* FROM User UU " +
+                    "INNER JOIN Reservation RR ON UU.username=RR.userId " +
+                    "WHERE RR.slotId = ? AND RR.roomId = ? AND RR.reservationDate = ?;", User.class);
+            query.setParameter(1, slotid);
+            query.setParameter(2, roomid);
+            query.setParameter(3, date);
+            List<User> users = query.getResultList();
+            entityManager.getTransaction().commit();
+            for (User user : users) {
+                if (user.getRole().compareTo("PROF") == 0) {
+                    result = true;
+                    break;
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            System.err.println("A problem occurred with the professor reservation");
+            result = false;
+        }
+        finally {
+            entityManager.close();
+        }
+        return result;
+    }
+
     public boolean professorReservation(String userid, int slotid, String roomid, Date date) {
-        //TODO: bisogna controllare che non sia già prenotata da un altro prof
+        boolean isReserved = checkProfessorReservation(slotid, roomid, date);
+        if (isReserved)
+            return false;
         userReservation(userid, slotid, roomid, date);
         boolean r = true;
         try {
@@ -98,7 +130,7 @@ public class DBManagerImpl implements DBManager {
             q.setParameter(2, slotid);
             q.setParameter(3, roomid);
             q.setParameter(4, date);
-
+            q.executeUpdate();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
