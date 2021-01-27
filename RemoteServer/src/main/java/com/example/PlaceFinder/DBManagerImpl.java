@@ -6,7 +6,9 @@ import com.example.PlaceFinder.entity.User;
 
 import javax.persistence.*;
 
-import java.util.Date;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DBManagerImpl implements DBManager {
@@ -143,6 +145,29 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    public BigInteger getNumReservations(Date date, String room, int slot){
+        BigInteger reservations;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT COUNT(*) FROM Reservation R WHERE R.reservationDate = ? AND R.roomId = ? AND R.slotId = ?;");
+            q.setParameter(1, date);
+            q.setParameter(2, room);
+            q.setParameter(3, slot);
+            reservations = (BigInteger) q.getSingleResult();
+            entityManager.getTransaction().commit();
+            System.out.println("Il numero è: " + reservations);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getNumReservations()");
+            reservations = BigInteger.valueOf(-1);
+        }
+        finally {
+            entityManager.close();
+        }
+        return reservations;
+    }
+
     public boolean deleteUserReservation(String userid, int slotid, String roomid, Date date) {
         boolean r = true;
         try {
@@ -153,7 +178,7 @@ public class DBManagerImpl implements DBManager {
             q.setParameter(2, slotid);
             q.setParameter(3, roomid);
             q.setParameter(4, date);
-
+            q.executeUpdate();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -187,7 +212,7 @@ public class DBManagerImpl implements DBManager {
     }
 
 
-    public List<User> findCovidContact(String userId){
+    private List<User> findCovidContact(String userId){
         List<User> r = null;
         try{
             entityManager = factory.createEntityManager();
@@ -243,7 +268,7 @@ public class DBManagerImpl implements DBManager {
         return result;
     }
 
-    public int updateCovidNotification(List<User> userList, boolean newNotification){
+    private boolean updateCovidNotification(List<User> userList, boolean newNotification){
         try{
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
@@ -255,20 +280,19 @@ public class DBManagerImpl implements DBManager {
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the updateCovidNotification()");
-            return 1;
+            return false;
         }
-        return 0;
+        return true;
     }
 
     //deletes all reservatons for a given room
     private void deleteReservations(String roomid) {
-
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
             Query q = entityManager.createNativeQuery("DELETE FROM Reservation r WHERE r.roomId=? AND r.reservationDate >= CURRENT_DATE()");
             q.setParameter(1, roomid);
-
+            q.executeUpdate();
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -279,11 +303,11 @@ public class DBManagerImpl implements DBManager {
         }
     }
 
-    public int notifyCovidContact(String userId){
+    public boolean notifyCovidContact(String userId){
         List<User> r = findCovidContact(userId);
         if(r == null)
-            return 0; //no update needed
-        int result = updateCovidNotification(r, true);
+            return true; //no update needed
+        boolean result = updateCovidNotification(r, true);
         return result;
     }
 
@@ -298,6 +322,7 @@ public class DBManagerImpl implements DBManager {
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the getRoomCapacity()");
+            prevCapacity = -1.0f;
         }
         finally {
             entityManager.close();
@@ -308,20 +333,18 @@ public class DBManagerImpl implements DBManager {
 
     public boolean changeCapacity(String roomid, float capacity) {
         boolean r = true;
+        float previousCapacity = getRoomCapacity(roomid);
+        if(previousCapacity < 0.0f)
+            return false;
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-
-            float previousCapacity = getRoomCapacity(roomid);
             Query q2 = entityManager.createNativeQuery("UPDATE Room SET capacity=? WHERE (idRoom=?)");
             q2.setParameter(1, capacity);
             q2.setParameter(2, roomid);
             q2.executeUpdate();
-
+            entityManager.getTransaction().commit();
             //In seguito a riduzione capienza, delete di tutte le prenotazioni degli utenti
-            if(previousCapacity > capacity) {
-                deleteReservations(roomid);
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the changeCapacity()");
@@ -329,6 +352,9 @@ public class DBManagerImpl implements DBManager {
         }
         finally {
             entityManager.close();
+        }
+        if(previousCapacity > capacity) {
+            deleteReservations(roomid);
         }
         return r;
     }
