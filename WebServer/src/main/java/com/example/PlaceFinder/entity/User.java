@@ -10,31 +10,16 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-//@Table(name = "user")
+@NoArgsConstructor
 public class User implements Serializable {
 
+    private static final long serialVersionUID = -1840631036252387600L;
     @Id
     private String username;
 
     private String password;
     private String role;
     private boolean covidNotification;
-
-
-    public User() {    }
-
-    /*@Override
-    public boolean equals(Object o) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        User that = (User) o;
-        return idUser != null && idUser.equals(that.getIdUser());
-    }*/
 
     @Override
     public int hashCode() {

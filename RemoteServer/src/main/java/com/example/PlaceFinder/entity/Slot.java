@@ -15,35 +15,11 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-//@Table(name = "slot")
 public class Slot implements Serializable {
+    private static final long serialVersionUID = -7662935462663092324L;
     @Id
     private Integer idSlot;
 
     private Time startTime;
     private Time endTime;
-/*
-    @ManyToOne
-    @MapsId("idRoom") //maps idRoom field in SlotId class
-    private Room room;
-
-    @OneToMany(mappedBy = "slot")
-    private List<Reservation> reservations = new ArrayList<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-        Slot that = (Slot) o;
-        return Objects.equals( room, that.room );// && Objects.equals( book, that.book );
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(room);
-    }*/
 }

@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 import java.sql.Date;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
@@ -55,6 +56,48 @@ public class MainController {
     public String admin(Model model, Principal principal) {
         String username = principal.getName();
         model.addAttribute("username", username);
+
+        DBManager service = ctx.getBean(DBManager.class);
+        List<Room> rooms = service.getRooms();
+
+        List<User> users = service.browseUsers();
+
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("users", users);
+        return "admin";
+    }
+
+    @RequestMapping("/addRoom")
+    public String addRoom(Model model, @RequestParam String id,
+                                      @RequestParam int numseats,
+                                      @RequestParam float capacity) {
+        System.out.println("[DBG]: /addRoom parameters "+id+" "+numseats+" "+capacity);
+
+        //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
+        //This is only meant for demonstration purposes
+        DBManager service = ctx.getBean(DBManager.class);
+        service.addRoom(id, numseats, capacity);
+
+        return "admin";
+    }
+
+    @RequestMapping("/editCapacity")
+    public String editCapacity(Model model, @RequestParam String id, @RequestParam float capacity) {
+
+        //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
+        //This is only meant for demonstration purposes
+        DBManager service = ctx.getBean(DBManager.class);
+        service.changeCapacity(id, capacity);
+
+        return "admin";
+    }
+
+    @RequestMapping("/notifyCovid")
+    public String notifyCovid(Model m, @RequestParam String id) {
+        //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
+        //This is only meant for demonstration purposes
+        DBManager service = ctx.getBean(DBManager.class);
+        service.notifyCovidContact(id);
         return "admin";
     }
 

@@ -41,13 +41,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/login").permitAll()
-                    .antMatchers("/main").hasAnyAuthority("STUDENT", "PROF")
-                    .antMatchers("/admin").hasAuthority("ADMIN")
+                    .antMatchers("/", "/login", "/style.css").permitAll()
+                    .antMatchers("/main/**").hasAnyAuthority("STUDENT", "PROF")
+                    .antMatchers("/admin/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/login")//.failureUrl("/login?error=true")
                     .permitAll()
                     .and()
                 .logout().permitAll()
@@ -59,6 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/images/**");
+                .antMatchers("/resources/**", "/static/**");//, "/css/**", "/images/**");
     }
 }
