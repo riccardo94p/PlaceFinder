@@ -120,12 +120,14 @@ public class BoardClient {
         List<Message> result = null;
         try {
             OtpErlangTuple response = (OtpErlangTuple) mbox.receive();
-            OtpErlangList resultList = (OtpErlangList) response.elementAt(1);
-            result = new ArrayList<Message>();
-            for (OtpErlangObject otpErlangObject : resultList) {
-                OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
-                Message message = tupleToMessage(tuple);
-                result.add(message);
+            if (response.elementAt(1) instanceof OtpErlangList) {
+                OtpErlangList resultList = (OtpErlangList) response.elementAt(1);
+                result = new ArrayList<Message>();
+                for (OtpErlangObject otpErlangObject : resultList) {
+                    OtpErlangTuple tuple = (OtpErlangTuple) otpErlangObject;
+                    Message message = tupleToMessage(tuple);
+                    result.add(message);
+                }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
