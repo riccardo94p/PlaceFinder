@@ -83,7 +83,7 @@
                 <configuration>
                     <jvmArguments>
                         -Djava.security.manager
-                        -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy
+                        -Djava.security.policy=./myprogram.policy
                         <!---Djava.rmi.server.codebase=http://localhost:1099/RemoteServer-->
                     </jvmArguments>
                 </configuration>
