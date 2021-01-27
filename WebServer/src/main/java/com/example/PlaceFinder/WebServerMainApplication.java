@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class WebServerMainApplication {
@@ -17,6 +18,14 @@ public class WebServerMainApplication {
         rmiProxyFactory.setServiceInterface(DBManager.class);
         return rmiProxyFactory;
     }
+
+    /*@Bean
+    RmiProxyFactoryBean loginService() {
+        RmiProxyFactoryBean rmiProxyFactory = new RmiProxyFactoryBean();
+        rmiProxyFactory.setServiceUrl("rmi://localhost:1099/LoginService");
+        rmiProxyFactory.setServiceInterface(UserDetailsService.class);
+        return rmiProxyFactory;
+    }*/
     public static void main( String[] args ) {
         if(System.getSecurityManager()==null)
             System.setSecurityManager(new SecurityManager());

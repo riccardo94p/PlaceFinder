@@ -4,8 +4,7 @@ import javax.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -13,29 +12,18 @@ import java.util.List;
 @ToString
 //@Table(name = "user")
 public class User implements Serializable {
-    //@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-    //private Long idUser;
 
-    @Id @Column(name = "username")
-    private String idUser;
+    @Id
+    private String username;
 
     private String password;
-    private int privilege;
+    private String role;
     private boolean covidNotification;
-/*
-    @OneToMany(mappedBy = "user") //maps the user field in the Reservation class
-    private List<Reservation> reservations = new ArrayList<>();
 
-    public User(String idUser, String password, Integer privilege, boolean covidNotification) {
-        this.idUser = idUser;
-        this.password = password;
-        this.privilege = privilege;
-        this.covidNotification = covidNotification;
-    }*/
 
     public User() {    }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if ( this == o ) {
             return true;
@@ -46,7 +34,7 @@ public class User implements Serializable {
 
         User that = (User) o;
         return idUser != null && idUser.equals(that.getIdUser());
-    }
+    }*/
 
     @Override
     public int hashCode() {
