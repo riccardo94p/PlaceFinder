@@ -10,6 +10,7 @@ import java.sql.Date;
 public interface DBManager {
     
     void exit();
+    User getUser(String username);
     boolean login(String username, String password);
     List<Reservation> browseUserReservations(String userId);
     boolean notifyCovidContact(String userId);

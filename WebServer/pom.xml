@@ -46,6 +46,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
@@ -79,7 +83,7 @@
                 <configuration>
                     <jvmArguments>
                         -Djava.security.manager
-                        -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy
+                        -Djava.security.policy=./myprogram.policy
                         <!---Djava.rmi.server.codebase=http://localhost:1099/RemoteServer-->
                     </jvmArguments>
                 </configuration>
