@@ -8,7 +8,7 @@
 
 
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/placefinder?serverTimezone=UTC" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/placefinder?serverTimezone=Europe/Rome" />
             <property name="javax.persistence.jdbc.user" value="test" />
             <property name="javax.persistence.jdbc.password" value="test" />
             <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
