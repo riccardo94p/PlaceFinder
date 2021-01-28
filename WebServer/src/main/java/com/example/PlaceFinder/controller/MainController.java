@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigInteger;
 import java.security.Principal;
 import java.sql.Date;
 
@@ -48,6 +49,13 @@ public class MainController {
     @RequestMapping("/main")
     public String main(Model model, Principal principal) {
         String username = principal.getName();
+
+        DBManager service = ctx.getBean(DBManager.class);
+        List<Slot> slots = service.browseSlots();
+        List<Room> rooms = service.getRooms();
+
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("slots", slots);
         model.addAttribute("username", username);//loggedUser.getUsername());
         return "main";
     }
@@ -59,7 +67,6 @@ public class MainController {
 
         DBManager service = ctx.getBean(DBManager.class);
         List<Room> rooms = service.getRooms();
-
         List<User> users = service.browseUsers();
 
         model.addAttribute("rooms", rooms);
@@ -99,6 +106,31 @@ public class MainController {
         DBManager service = ctx.getBean(DBManager.class);
         service.notifyCovidContact(id);
         return "admin";
+    }
+
+    @RequestMapping("/checkRoomStatus")
+    public String checkRoomStatus(Model m, @RequestParam String id, @RequestParam Date date, @RequestParam int slot) {
+        System.out.println("/checkRoomStatus called with params: "+id+" "+date+" "+slot);
+        DBManager service = ctx.getBean(DBManager.class);
+        int numReservations = service.getNumReservations(date,id,slot).intValue();
+        int availableSeats = service.getAvailableSeats(id);
+
+        //non prende id e date?
+        m.addAttribute("selectedRoom", id);
+        m.addAttribute("selectedDate", date);
+        m.addAttribute("selectedSlots", service.findSlotById(slot));
+        m.addAttribute("reservedSeats", numReservations);
+        m.addAttribute("availableSeats", availableSeats);
+        return "reservation";
+    }
+
+    @RequestMapping(value="/reservation", method = RequestMethod.POST)
+    public String reservation(Model m, Authentication auth, @RequestParam(name="selectedRoom") String id,
+                              @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
+        String username = auth.getName();//principal.getName();
+        String role = auth.getAuthorities().toString();
+        System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
+        return "main";
     }
 
     //for 403 access denied page

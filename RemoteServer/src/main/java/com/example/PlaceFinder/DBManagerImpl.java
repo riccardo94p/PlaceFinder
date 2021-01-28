@@ -2,6 +2,7 @@ package com.example.PlaceFinder;
 
 import com.example.PlaceFinder.entity.Reservation;
 import com.example.PlaceFinder.entity.Room;
+import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
 
 import javax.persistence.*;
@@ -398,5 +399,62 @@ public class DBManagerImpl implements DBManager {
             deleteReservations(roomid);
         }
         return r;
+    }
+
+    public List<Slot> browseSlots(){
+        List<Slot> s = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT * FROM Slot;", Slot.class);
+            s = q.getResultList();
+            entityManager.getTransaction().commit();
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the browseSlots().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return s;
+    }
+
+    public int getAvailableSeats(String roomid) {
+        int s=0;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Room r = entityManager.find(Room.class, roomid);
+            s = (int) (r.getNumSeats()*r.getCapacity());
+
+            entityManager.getTransaction().commit();
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getAvailableSeats().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return s;
+    }
+
+    public Slot findSlotById(int slotId){
+        Slot s = null;
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT * FROM Slot s WHERE s.idSlot = ?;", Slot.class);
+            q.setParameter(1, slotId);
+            s = (Slot) q.getSingleResult();
+            entityManager.getTransaction().commit();
+        } catch (Exception ex){
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the findSlotById().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return s;
     }
 }

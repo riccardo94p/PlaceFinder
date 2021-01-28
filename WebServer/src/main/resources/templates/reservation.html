@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<head>
+    <title>Reservation Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Reservation</h1>
+    <div>
+        <form th:action="@{/reservation}" method="post">
+            <input name="selectedRoom" th:type="text" th:value="${selectedRoom}" disabled/><br>
+            <input name="selectedDate" th:type="date"  th:value="${selectedDate}" disabled/>
+            <input name="selectedSlot" th:type="text" th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}" th:value="${selectedSlot.idSlot}" disabled/><br>
+            <input name="reservedSeats" th:type="text" th:text="${reservedSeats} +' / '+ ${availableSeats}" disabled/><br>
+            <input type="submit" value="Reserve"/>
+        </form>
+    </div>
+</body>
+</html>

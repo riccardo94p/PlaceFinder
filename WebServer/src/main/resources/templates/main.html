@@ -4,16 +4,80 @@
 <head>
     <title>Main Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript" th:inline="javascript">
+        function reserve() {
+            /*var data = elem.parentNode.getElementsByTagName("td")[5];
+            alert(data);
+
+            var url = "/reservation" + "?selectedRoom="+data[0] + "&selectedDate="+data[1] + "&selectedSlot="+data[2];*/
+
+            var room = document.getElementById("roomSelect").value;
+            var date = document.getElementById("dateSelect").value;
+            var slot = document.getElementById("slotSelect").value;
+
+            var url = "/reservation"+"?selectedRoom="+room+"selectedDate="+date+"&selectedSlot="+slot;
+            alert("reserve():" +url);
+            $.ajax({
+                'url' : url
+            });
+        }
+
+        function checkRoomStatus() {
+            /*var room = document.getElementById("roomSelect").value;
+            var date = document.getElementById("dateSelect").value;
+            var slot = document.getElementById("slotSelect").value;
+
+            var url = "/checkRoomStatus"+"?id="+room+"&date="+date+"&slot="+slot;
+            //alert(url);
+            $.ajax({
+                'url' : url
+            });*/
+
+            document.getElementById("reserveBut").style.visibility = "visible";
+            document.getElementById("availableSeats").style.visibility = "visible";
+        }
+    </script>
 </head>
-<body>
-    <!-- Include _menu.html -->
-    <div layout:fragment="content">
-        <h1>Main Page</h1>
-        <h3>Welcome <span th:utext="${username}"></span></h3>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
+<body><!-- th:with="uid=${username}">-->
+<div id="wrapper" style="width:100%; height:100%;">
+    <div class="titleBar">
+        <!--<img src="icon.png" style="width:40px; height:40px;" alt=""/>-->
+        Place Finder
     </div>
+
+    <br>
+    <a style="text-align: right">Welcome <span th:utext="${username}"></span> | </a>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <br><br><br>
+
+    <h2 style="text-align: center">User Panel</h2>
+
+    <div id="selectRoomDiv">
+        <form th:action="@{/checkRoomStatus}" method="get">
+            <select id="roomSelect" name="id" required th:placeholder="Room_id">
+                <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
+            </select>
+            <input id="dateSelect" name="date" type="date" required placeholder="date">
+            <select id="slotSelect" name="slot" required placeholder="time slot">
+                <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
+            </select>
+        <!--<button onclick="checkRoomStatus()">Check Availability</button>-->
+        <input type="submit" value="Check Availability"/>
+    </form>
+    </div>
+    <!--<div id="roomInfo" class="roomInfo" th:fragment="roominfo">
+        <form th:action="@{/reservation}" method="post">
+            <input name="selectedRoom" th:type="text" th:value="${selectedRoom}" disabled/><br>
+            <input name="selectedDate" th:type="date"  th:value="${selectedDate}" disabled/>
+            <input name="selectedSlot" th:type="text" th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}" th:value="${selectedSlot.idSlot}" disabled/><br>
+            <span id="availableSeats">Available seats: <input name="reservedSeats" th:type="text" th:text="${reservedSeats} +' / '+ ${availableSeats}" disabled/> </span><br>
+            <button id="reserveBut" type="submit" value="Reserve Seat" onclick="reserve()"></button>
+        </form>
+    </div>-->
+</div>
 </body>
 </html>
