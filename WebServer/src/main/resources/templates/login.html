@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
 <head>
-    <title>Login</title>
+    <title>Place Finder - Login</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
 </head>
 <body class="text-center">
-<div layout:fragment="content">
+<div>
     <form class="form-signin" th:action="@{/login}" method="post">
-        <!--<img class="mb-4" th:src="@{images/logo.jpg}" th:alt="logo" width="72" height="72"/>--> <!--src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />-->
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <div th:if="${param.error}">
             Invalid username and/or password.
@@ -21,9 +21,6 @@
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="" />
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
-    <!--<form class="form-signin" th:action="@{/signup}" method="get">
-        <button class="btn btn-md btn-success btn-block" type="Submit">Signup Here</button>
-    </form>-->
 </div>
 </body>
 </html>

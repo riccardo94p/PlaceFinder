@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 public class ReservationId implements Serializable {
 
+    private static final long serialVersionUID = 7500519827015353956L;
     @Column
     private String userId;
     @Column
@@ -23,22 +24,4 @@ public class ReservationId implements Serializable {
     @Column
     private Date reservationDate;
 
-    public ReservationId() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        ReservationId that = (ReservationId) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(slotId, that.slotId) && Objects.equals(roomId, that.roomId) && Objects.equals(reservationDate, that.reservationDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, slotId, roomId, reservationDate);
-    }
 }

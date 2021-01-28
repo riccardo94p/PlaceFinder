@@ -2,14 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
 <head>
-    <title th:utext="${title}"></title>
+    <title>Main Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="../static/css/style.css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
 </head>
 <body>
     <!-- Include _menu.html -->
     <div layout:fragment="content">
         <h1>Main Page</h1>
+        <h3>Welcome <span th:utext="${username}"></span></h3>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
     </div>
 </body>
 </html>
