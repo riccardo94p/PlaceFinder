@@ -6,9 +6,10 @@ import com.example.PlaceFinder.entity.User;
 
 import javax.persistence.*;
 
+import java.util.*;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.time.LocalDate;
+
 import java.util.List;
 
 public class DBManagerImpl implements DBManager {
@@ -29,6 +30,26 @@ public class DBManagerImpl implements DBManager {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
             u = entityManager.find(User.class, username);
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getUser().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return u;
+    }
+
+    public List<User> browseUsers() {
+        List<User> u = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Query q = entityManager.createNativeQuery("SELECT * FROM User", User.class);
+            u = q.getResultList();
 
             entityManager.getTransaction().commit();
         }catch (Exception ex) {
@@ -309,6 +330,26 @@ public class DBManagerImpl implements DBManager {
             return true; //no update needed
         boolean result = updateCovidNotification(r, true);
         return result;
+    }
+
+    public List<Room> getRooms() {
+        List<Room> rooms = new ArrayList<>();
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Query q = entityManager.createNativeQuery("SELECT * FROM Room", Room.class);
+            rooms = q.getResultList();
+
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getRooms()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return rooms;
     }
 
     //get current capacity for a specific room

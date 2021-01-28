@@ -11,39 +11,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-//@Table(name = "reservation")
+@NoArgsConstructor
 public class Reservation implements Serializable {
+    private static final long serialVersionUID = -4126471220728424836L;
     @EmbeddedId
     private ReservationId id;
-/*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("userId") //maps the userId field in the ReservationId class
-    private User user;
-
-    @ManyToOne
-    @MapsId("slotId")
-    private Slot slot;
-
-    @ManyToOne
-    @MapsId("roomId")
-    private Room room;
-*/
-    public Reservation() { }
-/*
-    @Override
-    public boolean equals(Object o) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-        Reservation that = (Reservation) o;
-        return Objects.equals( user, that.user ) && Objects.equals(slot, that.slot) && Objects.equals(room, that.room);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash( user, room, slot);
-    }*/
 }
