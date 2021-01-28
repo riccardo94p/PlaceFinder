@@ -46,7 +46,7 @@ public class MainController {
         }
     }
 
-    @RequestMapping("/main")
+    @RequestMapping(value="/main", method = RequestMethod.GET)
     public String main(Model model, Principal principal) {
         String username = principal.getName();
 
@@ -115,7 +115,6 @@ public class MainController {
         int numReservations = service.getNumReservations(date,id,slot).intValue();
         int availableSeats = service.getAvailableSeats(id);
 
-        //non prende id e date?
         m.addAttribute("selectedRoom", id);
         m.addAttribute("selectedDate", date);
         m.addAttribute("selectedSlots", service.findSlotById(slot));
@@ -124,13 +123,20 @@ public class MainController {
         return "reservation";
     }
 
-    @RequestMapping(value="/reservation", method = RequestMethod.POST)
-    public String reservation(Model m, Authentication auth, @RequestParam(name="selectedRoom") String id,
+    @RequestMapping("/reservation")
+    public String reservation(Authentication auth, @RequestParam(name="selectedRoom") String id,
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
         String role = auth.getAuthorities().toString();
+
+        //Date d = Date.valueOf(date);
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
-        return "main";
+
+        DBManager service = ctx.getBean(DBManager.class);
+        service.userReservation(username,slot,id,date);
+
+        //non so perchè non funziona il redirect
+        return "redirect:/main";
     }
 
     //for 403 access denied page

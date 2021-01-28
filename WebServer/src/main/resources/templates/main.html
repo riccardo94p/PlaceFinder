@@ -7,22 +7,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
     <script type="text/javascript" th:inline="javascript">
-        function reserve() {
-            /*var data = elem.parentNode.getElementsByTagName("td")[5];
-            alert(data);
 
-            var url = "/reservation" + "?selectedRoom="+data[0] + "&selectedDate="+data[1] + "&selectedSlot="+data[2];*/
-
-            var room = document.getElementById("roomSelect").value;
-            var date = document.getElementById("dateSelect").value;
-            var slot = document.getElementById("slotSelect").value;
-
-            var url = "/reservation"+"?selectedRoom="+room+"selectedDate="+date+"&selectedSlot="+slot;
-            alert("reserve():" +url);
-            $.ajax({
-                'url' : url
-            });
-        }
 
         function checkRoomStatus() {
             /*var room = document.getElementById("roomSelect").value;
@@ -69,6 +54,20 @@
         <input type="submit" value="Check Availability"/>
     </form>
     </div>
+    <!--<table>
+        <thead>
+            <tr>
+                <td>ROOM</td>
+                <td>AVAILABLE SEATS</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td th:each="r: ${availableRooms}" th:utext="${r.roomId}"></td>
+                <td th:each="r: ${availableRooms}" th:utext="${r.occupiedSeats}"></td>
+            </tr>
+        </tbody>
+    </table>-->
     <!--<div id="roomInfo" class="roomInfo" th:fragment="roominfo">
         <form th:action="@{/reservation}" method="post">
             <input name="selectedRoom" th:type="text" th:value="${selectedRoom}" disabled/><br>

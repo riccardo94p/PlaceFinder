@@ -190,6 +190,27 @@ public class DBManagerImpl implements DBManager {
         return reservations;
     }
 
+    public List<Object> getAvailabilityList(Date date, int slot) {
+        List<Object> r = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT roomId, COUNT(*) AS occupiedSeats FROM Reservation WHERE reservationDate=? AND slotId=? GROUP BY roomId;");
+            q.setParameter(1, date);
+            q.setParameter(2, slot);
+
+            r = q.getResultList();
+            entityManager.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getAvailabilityList()");
+        }
+        finally {
+            entityManager.close();
+        }
+        return r;
+    }
+
     public boolean deleteUserReservation(String userid, int slotid, String roomid, Date date) {
         boolean r = true;
         try {

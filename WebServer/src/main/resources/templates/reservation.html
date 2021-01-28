@@ -4,17 +4,47 @@
 <head>
     <title>Reservation Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript" th:inline="javascript">
+        function reserve() {
+            var room = document.getElementById("roomSelect").textContent;
+            var date = document.getElementById("dateSelect").textContent;
+            var slot = document.getElementById("slotSelect").textContent;
+
+            var url = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
+            //alert("reserve():" +url);
+            $.ajax({
+                'url' : url
+            });
+
+        }
+    </script>
 </head>
 <body>
-    <h1>Reservation</h1>
+    <h1>Reservation Ticket</h1>
     <div>
-        <form th:action="@{/reservation}" method="post">
-            <input name="selectedRoom" th:type="text" th:value="${selectedRoom}" disabled/><br>
-            <input name="selectedDate" th:type="date"  th:value="${selectedDate}" disabled/>
-            <input name="selectedSlot" th:type="text" th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}" th:value="${selectedSlot.idSlot}" disabled/><br>
-            <input name="reservedSeats" th:type="text" th:text="${reservedSeats} +' / '+ ${availableSeats}" disabled/><br>
-            <input type="submit" value="Reserve"/>
-        </form>
+        <table style="border:1px solid black;">
+            <thead>
+                <tr>
+                    <td>ROOM</td>
+                    <td>DATE</td>
+                    <td>SLOT</td>
+                    <td hidden></td>
+                    <td>AVAILABILITY</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="roomSelect" th:utext="${selectedRoom}"></td>
+                    <td id="dateSelect" th:utext="${selectedDate}"></td>
+                    <td id="slotSelect" hidden th:each="selectedSlot: ${selectedSlots}" th:utext="${selectedSlot.idSlot}"></td>
+                    <td th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}"></td>
+                    <td th:utext="${reservedSeats} +' / '+ ${availableSeats}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="confirm" onclick="reserve()">Confirm</button>
     </div>
 </body>
 </html>

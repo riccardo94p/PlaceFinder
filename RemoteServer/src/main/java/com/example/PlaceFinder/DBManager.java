@@ -27,4 +27,6 @@ public interface DBManager {
     boolean changeCapacity(String roomid, float capacity);
     int getAvailableSeats(String roomid);
     BigInteger getNumReservations(Date date, String room, int slot);
+
+    List<Object> getAvailabilityList(Date date, int slot);
 }
