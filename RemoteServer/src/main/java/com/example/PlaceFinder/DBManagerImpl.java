@@ -86,7 +86,34 @@ public class DBManagerImpl implements DBManager {
         return true;
     }
 
+    private Room findRoom(String roomId) {
+        Room room = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            room = entityManager.find(Room.class, roomId);
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getUser().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return room;
+    }
+
+    private boolean getSeatAvailability(int slotid, String roomid, Date date) {
+        Room room = findRoom(roomid);
+        BigInteger count = getNumReservations(date, roomid, slotid);
+        float numReservations = count.floatValue();
+        return (numReservations + 1) <= (room.getNumSeats() * room.getCapacity());
+    }
+
     public boolean userReservation(String userid, int slotid, String roomid, Date date) {
+        boolean availability = getSeatAvailability(slotid, roomid, date);
+        if (!availability)
+            return false;
         boolean r = true;
         try {
             entityManager = factory.createEntityManager();
