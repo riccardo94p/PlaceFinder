@@ -43,4 +43,25 @@ public class UserController {
         return "user";
     }
 
+    @GetMapping("/deleteUserReservation")
+    public String deleteUserReservation(@RequestParam(required = true, value = "userId") String userId, @RequestParam(required = true, value = "slotId") Integer slotId, @RequestParam(required = true, value = "roomId") String roomId, @RequestParam(required = true, value = "reservationDate") Date reservationDate, Model model, Principal principal){
+
+        System.out.println("Deleting reservation...");
+
+        DBManager service = ctx.getBean(DBManager.class);
+        service.deleteUserReservation(userId, slotId, roomId, reservationDate);
+
+        String username = principal.getName();
+        model.addAttribute("username", username);
+
+        List<Reservation> rList = service.browseUserReservations(username);
+        List<ReservationId> rId = new ArrayList<ReservationId>();
+
+        for(Reservation r : rList)
+            rId.add(r.getId());
+
+        model.addAttribute("reservation", rId);
+        return "user";
+    }
+
 }

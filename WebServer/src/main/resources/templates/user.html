@@ -36,7 +36,7 @@
                         <td th:utext="${r.slotId}">.....</td>
 
                         <td>
-                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="javascript:deleteUserReservation(this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
+                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
                         </td>
 
                 </tr>
@@ -45,7 +45,7 @@
                 <script type="text/javascript" th:inline="javascript">
                     function deleteUserReservation(usr, slot, room, date) {
 
-                        var url = "/deleteUserReservation?userid="+usr+"&slotid="+slot+"&roomid="+room+"&date="+date;
+                        var url = "/deleteUserReservation?userId="+usr+"&slotId="+slot+"&roomId="+room+"&reservationDate="+date;
                         //var url = "/updateStatus"+"?ip="+ip+"&resource="+resource+"&status="+status;
                         //$('#listDiv').load(url);
                         $.ajax({
