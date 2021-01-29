@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<head>
+    <title>Main Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="titleBar">
+    <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+    <div class="dropdown">
+        <button th:utext="${username}" class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a class="content" th:href="@{/main}">Home</a>
+            <form id="logoutform" th:action="@{/logout}" method="post">
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+            </form>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Include _menu.html -->
+<div layout:fragment="content">
+    <h3>Your Profile</h3>
+    <!--<h3>User <span th:utext="${username}"></span></h3>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <form txh:action="@{/main}" method="post">
+        <input type="submit" value="Back to Main"/>
+    </form>-->
+
+        <div id=listDiv>
+            <div>
+                <h3>Reservations list</h3>
+                <table>
+
+                    <tr>
+                        <td>Date</td>
+                        <td>Room</td>
+                        <td>Slot</td>
+                        <td>Deleting</td>
+                    </tr>
+                    <tr th:each="r: ${reservation} ">
+
+                        <td th:utext="${r.reservationDate}">.....</td>
+                        <td th:utext="${r.roomId}">.....</td>
+                        <td th:utext="${r.slotId}">.....</td>
+
+                        <td>
+                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this, this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
+                        </td>
+
+                </tr>
+
+            </table>
+                <script type="text/javascript" th:inline="javascript">
+                    function deleteUserReservation(elem, usr, slot, room, date) {
+
+                        var url = "/deleteUserReservation?userId="+usr+"&slotId="+slot+"&roomId="+room+"&reservationDate="+date;
+                        //var url = "/updateStatus"+"?ip="+ip+"&resource="+resource+"&status="+status;
+                        //$('#listDiv').load(url);
+                        $.ajax({
+                            'url' : url
+                        });
+
+                        var row = elem.parentNode.parentNode;
+                        var rowIndex = row.rowIndex;
+                        var table = row.parentNode.parentNode;
+                        table.deleteRow(rowIndex);
+
+                    }
+                </script>
+    </div>
+    </div>
+
+</div>
+</body>
+</html>

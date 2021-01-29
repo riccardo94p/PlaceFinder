@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<head>
+    <title>Reservation Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript" th:inline="javascript">
+        function reserve() {
+            var room = document.getElementById("roomSelect").textContent;
+            var date = document.getElementById("dateSelect").textContent;
+            var slot = document.getElementById("slotSelect").textContent;
+
+            var urlstring = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
+            //alert("reserve():" +url);
+            $.ajax({
+                url : urlstring,
+                success: function(response) {
+                    //alert(response);
+                    location.replace(response);
+                }
+            });
+
+        }
+    </script>
+</head>
+<body>
+<div class="titleBar">
+    <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+    <div class="dropdown">
+        <button th:utext="${username}" class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a class="content" th:href="@{/main}">Home</a>
+            <form id="logoutform" th:action="@{/logout}" method="post">
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+            </form>
+            </a>
+        </div>
+    </div>
+</div>
+    <h3>Reservation Ticket</h3>
+    <div>
+        <table style="border:1px solid black;">
+            <thead>
+                <tr>
+                    <td>ROOM</td>
+                    <td>DATE</td>
+                    <td>SLOT</td>
+                    <td hidden></td>
+                    <td>AVAILABILITY</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="roomSelect" th:utext="${selectedRoom}"></td>
+                    <td id="dateSelect" th:utext="${selectedDate}"></td>
+                    <td id="slotSelect" hidden th:each="selectedSlot: ${selectedSlots}" th:utext="${selectedSlot.idSlot}"></td>
+                    <td th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}"></td>
+                    <td th:utext="${reservedSeats} +' / '+ ${availableSeats}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="confirm" onclick="reserve()">Confirm</button>
+    </div>
+</body>
+</html>
