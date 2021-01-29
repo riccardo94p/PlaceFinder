@@ -14,6 +14,7 @@
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
+        <a class="nav-link" th:href="@{/user/__${username}__}" th:text="${username}"></a>
     </div>
 </body>
 </html>
