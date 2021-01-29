@@ -163,7 +163,6 @@ public class DBManagerImpl implements DBManager {
         boolean isReserved = checkProfessorReservation(slotid, roomid, date);
         if (isReserved)
             return false;
-        userReservation(userid, slotid, roomid, date);
         boolean r = true;
         try {
             entityManager = factory.createEntityManager();
@@ -183,6 +182,7 @@ public class DBManagerImpl implements DBManager {
         finally {
             entityManager.close();
         }
+        userReservation(userid, slotid, roomid, date);
         return r;
     }
 
