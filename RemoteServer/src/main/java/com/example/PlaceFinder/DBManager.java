@@ -1,6 +1,7 @@
 package com.example.PlaceFinder;
 import com.example.PlaceFinder.entity.Reservation;
 import com.example.PlaceFinder.entity.Room;
+import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
 
 import java.math.BigInteger;
@@ -13,6 +14,8 @@ public interface DBManager {
     void exit();
     User getUser(String username);
     List<User> browseUsers();
+    List<Slot> browseSlots();
+    Slot findSlotById(int slotId);
     boolean login(String username, String password);
     List<Reservation> browseUserReservations(String userId);
     boolean notifyCovidContact(String userId);
@@ -22,5 +25,6 @@ public interface DBManager {
     List<Room> getRooms();
     String addRoom(String idRoom, int numSeats, float capacity);
     boolean changeCapacity(String roomid, float capacity);
+    int getAvailableSeats(String roomid);
     BigInteger getNumReservations(Date date, String room, int slot);
 }

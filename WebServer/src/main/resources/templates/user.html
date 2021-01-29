@@ -8,16 +8,29 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
+<div class="titleBar">
+    <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+    <div class="dropdown">
+        <button th:utext="${username}" class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a class="content" th:href="@{/main}">Home</a>
+            <form id="logoutform" th:action="@{/logout}" method="post">
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+            </form>
+            </a>
+        </div>
+    </div>
+</div>
 <!-- Include _menu.html -->
 <div layout:fragment="content">
-    <h1>Your Profile</h1>
-    <h3>User <span th:utext="${username}"></span></h3>
+    <h3>Your Profile</h3>
+    <!--<h3>User <span th:utext="${username}"></span></h3>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
     <form txh:action="@{/main}" method="post">
         <input type="submit" value="Back to Main"/>
-    </form>
+    </form>-->
 
         <div id=listDiv>
             <div>

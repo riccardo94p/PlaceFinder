@@ -4,17 +4,55 @@
 <head>
     <title>Main Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript">
+        function setDatePicker() {
+            //blocks all dates before current date
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("dateSelect").setAttribute("min", today);
+            //document.getElementsByName("somedate")[0].setAttribute('min', today);
+        }
+    </script>
 </head>
-<body>
-    <!-- Include _menu.html -->
-    <div layout:fragment="content">
-        <h1>Main Page</h1>
-        <h3>Welcome <span th:utext="${username}"></span></h3>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
-        </form>
-        <a class="nav-link" th:href="@{/user/__${username}__}" th:text="${username}"></a>
+<body onload="setDatePicker()"><!-- th:with="uid=${username}">-->
+    <div class="titleBar">
+        <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+        <div class="dropdown">
+            <button th:utext="${username}" class="dropbtn"></button>
+            <div class="dropdown-content">
+                <a href="#" class="content" th:href="@{/user/__${username}__}">Profile</a>
+                <form id="logoutform" th:action="@{/logout}" method="post">
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                </form>
+                </a>
+            </div>
+        </div>
+    </div>
+    <br><br><br>
+    <div id="wrapper" style="width:100%; height:100%; margin:auto; padding:10px;">
+        <!--<h3 style="text-align: center">User Panel</h3>-->
+
+        <div class="selectRoomDiv">
+            <form th:action="@{/checkRoomStatus}" method="post">
+                <select id="roomSelect" name="id" required th:placeholder="Room_id">
+                    <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
+                </select>
+                <input id="dateSelect" name="date" type="date" required placeholder="date">
+                <select id="slotSelect" name="slot" required placeholder="time slot">
+                    <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
+                </select><br>
+            <input type="submit" value="Check Availability"/>
+            </form>
+        </div>
+        <div class="erlangWrapper">
+            <div id="erlangDiv">
+                <div class="board">
+                </div>
+                <input type="text" placeholder="Write a message to the Board..."><br>
+                <button>Post</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
