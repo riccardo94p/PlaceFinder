@@ -26,10 +26,24 @@ public class MainController {
 
     @Autowired
     private ApplicationContext ctx;
+    @Autowired
+    private DBManager service;
+
+    @GetMapping("/testconcurrentreserve")
+    public @ResponseBody void testconcurrentreserve(@RequestParam String username, @RequestParam int slotId,
+                                                @RequestParam String room, @RequestParam String dateStr) {
+        Date d = Date.valueOf(dateStr);
+        boolean result = service.userReservation(username, slotId, room, d);
+        if(result){
+            System.out.println("Numero posti: " + service.getNumReservations(d, room, slotId));
+        }
+        else {
+            System.out.println("Prenotazione fallita");
+        }
+    }
 
     @GetMapping("/browsereservation")
     public @ResponseBody void browsereservation() {
-        DBManager service = ctx.getBean(DBManager.class);
         List<Reservation> r = service.browseUserReservations("aaa1");
         for(Reservation x: r){
             System.out.println("Reservations: " + x.getId().getReservationDate() + " - " + x.getId().getRoomId() + " - " + x.getId().getSlotId());
@@ -38,7 +52,6 @@ public class MainController {
 
     @GetMapping("/reserve")
     public @ResponseBody void reserve() {
-        DBManager service = ctx.getBean(DBManager.class);
         Date d = Date.valueOf("2021-01-27");
         boolean result = service.userReservation("aaa1", 0, "b12", d);
         if(result){
@@ -65,7 +78,6 @@ public class MainController {
         String username = principal.getName();
         model.addAttribute("username", username);
 
-        DBManager service = ctx.getBean(DBManager.class);
         List<Room> rooms = service.getRooms();
         List<User> users = service.browseUsers();
 
@@ -82,7 +94,6 @@ public class MainController {
 
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
-        DBManager service = ctx.getBean(DBManager.class);
         service.addRoom(id, numseats, capacity);
 
         return "admin";
@@ -93,7 +104,6 @@ public class MainController {
 
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
-        DBManager service = ctx.getBean(DBManager.class);
         service.changeCapacity(id, capacity);
 
         return "admin";
@@ -103,7 +113,6 @@ public class MainController {
     public String notifyCovid(Model m, @RequestParam String id) {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
-        DBManager service = ctx.getBean(DBManager.class);
         service.notifyCovidContact(id);
         return "admin";
     }

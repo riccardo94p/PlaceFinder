@@ -4,6 +4,7 @@ import com.example.PlaceFinder.entity.Reservation;
 import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
+import lombok.Synchronized;
 
 import javax.persistence.*;
 
@@ -25,6 +26,7 @@ public class DBManagerImpl implements DBManager {
         factory.close();
     }
 
+    @Synchronized
     public User getUser(String username) {
         User u = null;
         try {
@@ -43,6 +45,7 @@ public class DBManagerImpl implements DBManager {
         return u;
     }
 
+    @Synchronized
     public List<User> browseUsers() {
         List<User> u = null;
         try {
@@ -62,6 +65,8 @@ public class DBManagerImpl implements DBManager {
         }
         return u;
     }
+
+    @Synchronized
     public boolean login(String username, String password) {
         List<User> tmpUsers = null;
         try {
@@ -87,7 +92,37 @@ public class DBManagerImpl implements DBManager {
         return true;
     }
 
+    @Synchronized
+    private Room findRoom(String roomId) {
+        Room room = null;
+        try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            room = entityManager.find(Room.class, roomId);
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the getUser().");
+        }
+        finally {
+            entityManager.close();
+        }
+        return room;
+    }
+
+    @Synchronized
+    private boolean getSeatAvailability(int slotid, String roomid, Date date) {
+        Room room = findRoom(roomid);
+        BigInteger count = getNumReservations(date, roomid, slotid);
+        float numReservations = count.floatValue();
+        return (numReservations + 1) <= (room.getNumSeats() * room.getCapacity());
+    }
+
+    @Synchronized
     public boolean userReservation(String userid, int slotid, String roomid, Date date) {
+        boolean availability = getSeatAvailability(slotid, roomid, date);
+        if (!availability)
+            return false;
         boolean r = true;
         try {
             entityManager = factory.createEntityManager();
@@ -110,6 +145,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    @Synchronized
     private boolean checkProfessorReservation(int slotid, String roomid, Date date) {
         boolean result = false;
         try {
@@ -140,6 +176,7 @@ public class DBManagerImpl implements DBManager {
         return result;
     }
 
+    @Synchronized
     public boolean professorReservation(String userid, int slotid, String roomid, Date date) {
         boolean isReserved = checkProfessorReservation(slotid, roomid, date);
         if (isReserved)
@@ -167,6 +204,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    @Synchronized
     public BigInteger getNumReservations(Date date, String room, int slot){
         BigInteger reservations;
         try {
@@ -190,27 +228,7 @@ public class DBManagerImpl implements DBManager {
         return reservations;
     }
 
-    public List<Object> getAvailabilityList(Date date, int slot) {
-        List<Object> r = null;
-        try {
-            entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT roomId, COUNT(*) AS occupiedSeats FROM Reservation WHERE reservationDate=? AND slotId=? GROUP BY roomId;");
-            q.setParameter(1, date);
-            q.setParameter(2, slot);
-
-            r = q.getResultList();
-            entityManager.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("A problem occurred with the getAvailabilityList()");
-        }
-        finally {
-            entityManager.close();
-        }
-        return r;
-    }
-
+    @Synchronized
     public boolean deleteUserReservation(String userid, int slotid, String roomid, Date date) {
         boolean r = true;
         try {
@@ -234,6 +252,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    @Synchronized
     // get user reservations
     public List<Reservation> browseUserReservations(String userId) {
         List<Reservation> r = null;
@@ -255,6 +274,7 @@ public class DBManagerImpl implements DBManager {
     }
 
 
+    @Synchronized
     private List<User> findCovidContact(String userId){
         List<User> r = null;
         try{
@@ -282,6 +302,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    @Synchronized
     //reserved to admin only
     public String addRoom(String idRoom, int numSeats, float capacity) {
         String result = "";
@@ -311,6 +332,7 @@ public class DBManagerImpl implements DBManager {
         return result;
     }
 
+    @Synchronized
     private boolean updateCovidNotification(List<User> userList, boolean newNotification){
         try{
             entityManager = factory.createEntityManager();
@@ -328,6 +350,7 @@ public class DBManagerImpl implements DBManager {
         return true;
     }
 
+    @Synchronized
     //deletes all reservatons for a given room
     private void deleteReservations(String roomid) {
         try {
@@ -346,6 +369,7 @@ public class DBManagerImpl implements DBManager {
         }
     }
 
+    @Synchronized
     public boolean notifyCovidContact(String userId){
         List<User> r = findCovidContact(userId);
         if(r == null)
@@ -354,6 +378,7 @@ public class DBManagerImpl implements DBManager {
         return result;
     }
 
+    @Synchronized
     public List<Room> getRooms() {
         List<Room> rooms = new ArrayList<>();
         try {
@@ -374,6 +399,7 @@ public class DBManagerImpl implements DBManager {
         return rooms;
     }
 
+    @Synchronized
     //get current capacity for a specific room
     private float getRoomCapacity(String roomid) {
         float prevCapacity = 0;
@@ -394,6 +420,7 @@ public class DBManagerImpl implements DBManager {
         return prevCapacity;
     }
 
+    @Synchronized
     public boolean changeCapacity(String roomid, float capacity) {
         boolean r = true;
         float previousCapacity = getRoomCapacity(roomid);
