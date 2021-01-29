@@ -63,7 +63,6 @@ public class MainController {
     public String main(Model model, Principal principal) {
         String username = principal.getName();
 
-        DBManager service = ctx.getBean(DBManager.class);
         List<Slot> slots = service.browseSlots();
         List<Room> rooms = service.getRooms();
 
@@ -118,12 +117,13 @@ public class MainController {
     }
 
     @RequestMapping("/checkRoomStatus")
-    public String checkRoomStatus(Model m, @RequestParam String id, @RequestParam Date date, @RequestParam int slot) {
+    public String checkRoomStatus(Authentication auth, Model m, @RequestParam String id, @RequestParam Date date, @RequestParam int slot) {
         System.out.println("/checkRoomStatus called with params: "+id+" "+date+" "+slot);
-        DBManager service = ctx.getBean(DBManager.class);
+
+        String username = auth.getName();
         int numReservations = service.getNumReservations(date,id,slot).intValue();
         int availableSeats = service.getAvailableSeats(id);
-
+        m.addAttribute("username", username);
         m.addAttribute("selectedRoom", id);
         m.addAttribute("selectedDate", date);
         m.addAttribute("selectedSlots", service.findSlotById(slot));
@@ -139,10 +139,8 @@ public class MainController {
         String username = auth.getName();//principal.getName();
         String role = auth.getAuthorities().toString();
 
-        //Date d = Date.valueOf(date);
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
-        DBManager service = ctx.getBean(DBManager.class);
         service.userReservation(username,slot,id,date);
 
         //TODO: Redirect alla pagina dell'utente così vede la prenotazione appena effettuata

@@ -28,8 +28,18 @@
 <body>
 <div class="titleBar">
     <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+    <div class="dropdown">
+        <button th:utext="${username}" class="dropbtn"></button>
+        <div class="dropdown-content">
+            <a class="content" th:href="@{/main}">Home</a>
+            <form id="logoutform" th:action="@{/logout}" method="post">
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+            </form>
+            </a>
+        </div>
+    </div>
 </div>
-    <h2>Reservation Ticket</h2>
+    <h3>Reservation Ticket</h3>
     <div>
         <table style="border:1px solid black;">
             <thead>
