@@ -5,8 +5,11 @@
     <title>Place Finder - Login</title>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
 </head>
-<body class="text-center">
-<div>
+<body>
+<div class="titleBar">
+    Place Finder
+</div>
+<div class="log-form">
     <form class="form-signin" th:action="@{/login}" method="post">
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <div th:if="${param.error}">
@@ -15,11 +18,9 @@
         <div th:if="${param.logout}">
             You have been logged out.
         </div>
-        <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required="" />
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="" />
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <input type="text" name="username" id="inputUsername" class="log-input" placeholder="Username" required="" /><br>
+        <input type="password" name="password" id="inputPassword" class="log-input" placeholder="Password" required="" /><br>
+        <button class="btn" type="submit">Sign in</button>
     </form>
 </div>
 </body>

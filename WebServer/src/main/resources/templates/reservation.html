@@ -12,10 +12,14 @@
             var date = document.getElementById("dateSelect").textContent;
             var slot = document.getElementById("slotSelect").textContent;
 
-            var url = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
+            var urlstring = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
             //alert("reserve():" +url);
             $.ajax({
-                'url' : url
+                url : urlstring,
+                success: function(response) {
+                    alert(response);
+                    location.replace(response);
+                }
             });
 
         }

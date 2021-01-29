@@ -124,6 +124,7 @@ public class MainController {
     }
 
     @RequestMapping("/reservation")
+    @ResponseBody
     public String reservation(Authentication auth, @RequestParam(name="selectedRoom") String id,
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
@@ -135,8 +136,8 @@ public class MainController {
         DBManager service = ctx.getBean(DBManager.class);
         service.userReservation(username,slot,id,date);
 
-        //non so perchè non funziona il redirect
-        return "redirect:/main";
+        //TODO: Redirect alla pagina dell'utente così vede la prenotazione appena effettuata
+        return "main";
     }
 
     //for 403 access denied page
