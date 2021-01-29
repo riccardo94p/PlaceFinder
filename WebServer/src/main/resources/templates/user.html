@@ -5,6 +5,7 @@
     <title>Main Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
 <!-- Include _menu.html -->
@@ -14,7 +15,7 @@
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
-    <form th:action="@{/main}" method="post">
+    <form txh:action="@{/main}" method="post">
         <input type="submit" value="Back to Main"/>
     </form>
 
@@ -36,14 +37,14 @@
                         <td th:utext="${r.slotId}">.....</td>
 
                         <td>
-                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
+                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this, this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
                         </td>
 
                 </tr>
 
             </table>
                 <script type="text/javascript" th:inline="javascript">
-                    function deleteUserReservation(usr, slot, room, date) {
+                    function deleteUserReservation(elem, usr, slot, room, date) {
 
                         var url = "/deleteUserReservation?userId="+usr+"&slotId="+slot+"&roomId="+room+"&reservationDate="+date;
                         //var url = "/updateStatus"+"?ip="+ip+"&resource="+resource+"&status="+status;
@@ -51,6 +52,11 @@
                         $.ajax({
                             'url' : url
                         });
+
+                        var row = elem.parentNode.parentNode;
+                        var rowIndex = row.rowIndex;
+                        var table = row.parentNode.parentNode;
+                        table.deleteRow(rowIndex);
 
                     }
                 </script>
