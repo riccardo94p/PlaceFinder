@@ -7,7 +7,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
     <script type="text/javascript" th:inline="javascript">
-        function reserve() {
+        function reserve(username) {
             var room = document.getElementById("roomSelect").textContent;
             var date = document.getElementById("dateSelect").textContent;
             var slot = document.getElementById("slotSelect").textContent;
@@ -21,6 +21,7 @@
                     location.replace(response);
                 }
             });
+            location.replace("user/"+username);
 
         }
     </script>
@@ -61,7 +62,7 @@
                 </tr>
             </tbody>
         </table>
-        <button id="confirm" onclick="reserve()">Confirm</button>
+        <button id="confirm" th:usr="${username}" onclick="reserve(this.getAttribute('usr'))" >Confirm</button>
     </div>
 </body>
 </html>
