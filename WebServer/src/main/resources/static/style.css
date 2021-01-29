@@ -3,17 +3,16 @@ body {
     padding: 0em;
     margin: 0em;
     font-family: sans-serif;
+    font-size: 14pt;
 }
 
 .titleBar {
     background-color: #343a40;
     padding: 1em;
     color: #f5f5f5;
-    font-size: 22pt;
     width: 100%;
     height: auto;
     text-align: center;
-    font-weight: bold;
 }
 
 #tablesDiv {
@@ -73,6 +72,61 @@ body {
     cursor:pointer;
             }
 
+/* ===== DROPDOWN MENU ========== */
+
+.dropbtn {
+    background-color: #446487;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20%;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float:left;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.logoutbtn {
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #6c90b8; }
+
+.selectRoomDiv, .erlangWrapper {
+    float:left;
+    width:50%;
+    text-align: center;
+}
+
+.board {
+    background: #dddddd;
+    border: 1px solid black;
+    min-width: 200px;
+    min-height: 400px;
+}
+/* ============================ */
 /*table {
     display: inline-block;
     border-collapse: collapse;
@@ -102,20 +156,6 @@ button {
     font-weight: bold;
 }
 
-.onButton {
-    background-color: forestgreen;
-    border-radius: 50%;
-    border: none;
-    font-weight: bold;
-    text-align: center;
-}
-.offButton {
-    background-color: red;
-    border-radius: 50%;
-    border: none;
-    font-weight: bold;
-    text-align: center;
-}
 button:hover {
     cursor: pointer;
 }

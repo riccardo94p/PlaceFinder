@@ -17,7 +17,7 @@
             $.ajax({
                 url : urlstring,
                 success: function(response) {
-                    alert(response);
+                    //alert(response);
                     location.replace(response);
                 }
             });
@@ -26,7 +26,10 @@
     </script>
 </head>
 <body>
-    <h1>Reservation Ticket</h1>
+<div class="titleBar">
+    <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+</div>
+    <h2>Reservation Ticket</h2>
     <div>
         <table style="border:1px solid black;">
             <thead>

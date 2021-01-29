@@ -16,19 +16,24 @@
     </script>
 </head>
 <body onload="setDatePicker()"><!-- th:with="uid=${username}">-->
-<div id="wrapper" style="width:100%; height:100%;">
-    <div class="titleBar">Place Finder</div>
-
-    <br>
-    <a style="text-align: right">Welcome <span th:utext="${username}"></span> | </a>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
+    <div class="titleBar">
+        <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+        <div class="dropdown">
+            <button th:utext="${username}" class="dropbtn"></button>
+            <div class="dropdown-content">
+                <a href="#" class="content">Profile</a>
+                <form id="logoutform" th:action="@{/logout}" method="post">
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                </form>
+                </a>
+            </div>
+        </div>
+    </div>
     <br><br><br>
+<div id="wrapper" style="width:100%; height:100%; margin:auto; padding:10px;">
+    <!--<h3 style="text-align: center">User Panel</h3>-->
 
-    <h2 style="text-align: center">User Panel</h2>
-
-    <div id="selectRoomDiv">
+    <div class="selectRoomDiv">
         <form th:action="@{/checkRoomStatus}" method="post">
             <select id="roomSelect" name="id" required th:placeholder="Room_id">
                 <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
@@ -36,9 +41,17 @@
             <input id="dateSelect" name="date" type="date" required placeholder="date">
             <select id="slotSelect" name="slot" required placeholder="time slot">
                 <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
-            </select>
+            </select><br>
         <input type="submit" value="Check Availability"/>
     </form>
+    </div>
+    <div class="erlangWrapper">
+        <div id="erlangDiv">
+            <div class="board">
+            </div>
+            <input type="text" placeholder="Write a message to the Board..."><br>
+            <button>Post</button>
+        </div>
     </div>
 </div>
 </body>
