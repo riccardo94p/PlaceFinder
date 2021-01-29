@@ -22,27 +22,20 @@
     </div>
 </div>
 <!-- Include _menu.html -->
-<div layout:fragment="content">
+<div class="wrapper">
     <h3>Your Profile</h3>
-    <!--<h3>User <span th:utext="${username}"></span></h3>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-    <form txh:action="@{/main}" method="post">
-        <input type="submit" value="Back to Main"/>
-    </form>-->
-
         <div id=listDiv>
             <div>
                 <h3>Reservations list</h3>
                 <table>
-
-                    <tr>
-                        <td>Date</td>
-                        <td>Room</td>
-                        <td>Slot</td>
-                        <td>Deleting</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>ROOM</th>
+                            <th>TIME SLOT</th>
+                            <th>DELETE</th>
+                        </tr>
+                    </thead>
                     <tr th:each="r: ${reservation} ">
 
                         <td th:utext="${r.reservationDate}">.....</td>
@@ -50,7 +43,7 @@
                         <td th:utext="${r.slotId}">.....</td>
 
                         <td>
-                            <button type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this, this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">Delete Reservation</button>
+                            <button class="delete-reservation" type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this, this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">X</button>
                         </td>
 
                 </tr>
