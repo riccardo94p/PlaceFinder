@@ -62,13 +62,14 @@ public class MainController {
     @RequestMapping(value="/main", method = RequestMethod.GET)
     public String main(Model model, Principal principal) {
         String username = principal.getName();
-
+        User u = service.getUser(username);
         List<Slot> slots = service.browseSlots();
         List<Room> rooms = service.getRooms();
 
         model.addAttribute("rooms", rooms);
         model.addAttribute("slots", slots);
         model.addAttribute("username", username);//loggedUser.getUsername());
+        model.addAttribute("notification", u.getCovidNotification());
         return "main";
     }
 

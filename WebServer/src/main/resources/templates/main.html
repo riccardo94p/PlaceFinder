@@ -14,6 +14,9 @@
             datepicker.setAttribute("min", today);
             datepicker.setAttribute("value", today);
         }
+        function dismissNotification(elem) {
+            elem.style.display = "none";
+        }
     </script>
 </head>
 <body onload="setDatePicker()"><!-- th:with="uid=${username}">-->
@@ -30,9 +33,16 @@
             </div>
         </div>
     </div>
-    <br><br><br>
+    <br><br>
     <div class="wrapper">
-
+        <div class="notification-wrapper">
+            <div th:switch="${notification}">
+                <div th:case="true" class="covid-notification" onclick="dismissNotification(this)">
+                   WARNING <br> You were traced as a potential contact of a confirmed Covid-19 case. Please take the necessary precautions.
+                </div>
+            </div>
+        </div>
+        <br><br>
         <div class="selectRoomDiv">
             <form th:action="@{/checkRoomStatus}" method="post">
                 <select id="roomSelect" name="id" required th:placeholder="Room_id">
