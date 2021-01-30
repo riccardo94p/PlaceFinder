@@ -51,16 +51,17 @@
         </div>
     </div>
 </div>
+<div class="wrapper">
     <h3>Reservation Ticket</h3>
-    <div>
-        <table style="border:1px solid black;">
+    <div class="reservation-table-wrapper">
+        <table>
             <thead>
                 <tr>
-                    <td>ROOM</td>
-                    <td>DATE</td>
-                    <td>SLOT</td>
-                    <td hidden></td>
-                    <td>AVAILABILITY</td>
+                    <th>ROOM</th>
+                    <th>DATE</th>
+                    <th>SLOT</th>
+                    <th hidden></th>
+                    <th>AVAILABILITY</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,7 +76,7 @@
             </tbody>
         </table>
         <button id="confirmButton" th:usr="${username}" onclick="reserve(this.getAttribute('usr'))" >Confirm</button>
-
     </div>
+</div>
 </body>
 </html>
