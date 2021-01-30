@@ -93,29 +93,11 @@ public class DBManagerImpl implements DBManager {
     }
 
     @Synchronized
-    private Room findRoom(String roomId) {
-        Room room = null;
-        try {
-            entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
-            room = entityManager.find(Room.class, roomId);
-            entityManager.getTransaction().commit();
-        }catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("A problem occurred with the getUser().");
-        }
-        finally {
-            entityManager.close();
-        }
-        return room;
-    }
-
-    @Synchronized
     private boolean getSeatAvailability(int slotid, String roomid, Date date) {
-        Room room = findRoom(roomid);
+        int availableSeats = getAvailableSeats(roomid);
         BigInteger count = getNumReservations(date, roomid, slotid);
         float numReservations = count.floatValue();
-        return (numReservations + 1) <= (room.getNumSeats() * room.getCapacity());
+        return (numReservations + 1) <= availableSeats;
     }
 
     @Synchronized
@@ -146,7 +128,7 @@ public class DBManagerImpl implements DBManager {
     }
 
     @Synchronized
-    private boolean checkProfessorReservation(int slotid, String roomid, Date date) {
+    public boolean checkProfessorReservation(int slotid, String roomid, Date date) {
         boolean result = false;
         try {
             entityManager = factory.createEntityManager();
@@ -181,7 +163,6 @@ public class DBManagerImpl implements DBManager {
         boolean isReserved = checkProfessorReservation(slotid, roomid, date);
         if (isReserved)
             return false;
-        userReservation(userid, slotid, roomid, date);
         boolean r = true;
         try {
             entityManager = factory.createEntityManager();
@@ -201,6 +182,7 @@ public class DBManagerImpl implements DBManager {
         finally {
             entityManager.close();
         }
+        userReservation(userid, slotid, roomid, date);
         return r;
     }
 
@@ -449,6 +431,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
+    @Synchronized
     public List<Slot> browseSlots(){
         List<Slot> s = null;
         try {
@@ -467,6 +450,7 @@ public class DBManagerImpl implements DBManager {
         return s;
     }
 
+    @Synchronized
     public int getAvailableSeats(String roomid) {
         int s=0;
         try {
@@ -487,6 +471,7 @@ public class DBManagerImpl implements DBManager {
         return s;
     }
 
+    @Synchronized
     public Slot findSlotById(int slotId){
         Slot s = null;
         try{

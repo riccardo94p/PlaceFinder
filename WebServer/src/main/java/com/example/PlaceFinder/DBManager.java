@@ -19,6 +19,7 @@ public interface DBManager {
     List<Reservation> browseUserReservations(String userId);
     boolean notifyCovidContact(String userId);
     boolean userReservation(String userid, int slotid, String roomid, Date date);
+    boolean checkProfessorReservation(int slotid, String roomid, Date date);
     boolean professorReservation(String userid, int slotid, String roomid, Date date);
     boolean deleteUserReservation(String userid, int slotid, String roomid, Date date);
     List<Room> getRooms();
