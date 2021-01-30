@@ -7,7 +7,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
     <script type="text/javascript" th:inline="javascript">
-        function reserve() {
+        function reserve(username) {
             var room = document.getElementById("roomSelect").textContent;
             var date = document.getElementById("dateSelect").textContent;
             var slot = document.getElementById("slotSelect").textContent;
@@ -21,11 +21,23 @@
                     location.replace(response);
                 }
             });
+            location.replace("user/"+username);
 
         }
     </script>
 </head>
-<body>
+<body id="bodyId" th:reservedSeats="${reservedSeats}" th:availableSeats="${availableSeats}" th:onload="disableButton([[${reservedSeats}]], [[${availableSeats}]])" >
+<script type="text/javascript" th:inline="javascript">
+    function disableButton(reservedSeats, availableSeats){
+        var elem = document.getElementById("confirmButton");
+        if(reservedSeats == availableSeats){
+            elem.disabled = true;
+        }
+        else{
+            elem.disabled = false;
+        }
+    }
+</script>
 <div class="titleBar">
     <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
     <div class="dropdown">
@@ -59,10 +71,11 @@
                     <td id="slotSelect" hidden th:each="selectedSlot: ${selectedSlots}" th:utext="${selectedSlot.idSlot}"></td>
                     <td th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}"></td>
                     <td th:utext="${reservedSeats} +' / '+ ${availableSeats}"></td>
+
                 </tr>
             </tbody>
-        </table><br>
-        <button id="confirm" class="confirmBut" onclick="reserve()">Confirm</button>
+        </table>
+        <button id="confirmButton" th:usr="${username}" onclick="reserve(this.getAttribute('usr'))" >Confirm</button>
     </div>
 </div>
 </body>
