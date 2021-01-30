@@ -27,7 +27,7 @@
             <div class="dropdown-content">
                 <a href="#" class="content" th:href="@{/user/__${username}__}">Profile</a>
                 <form id="logoutform" th:action="@{/logout}" method="post">
-                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
                 </form>
                 </a>
             </div>
@@ -45,11 +45,11 @@
         <br><br>
         <div class="selectRoomDiv">
             <form th:action="@{/checkRoomStatus}" method="post">
-                <select id="roomSelect" name="id" required th:placeholder="Room_id">
+                <select class="select-input" id="roomSelect" name="id" required th:placeholder="Room">
                     <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
                 </select>
-                <input id="dateSelect" name="date" type="date" required placeholder="date">
-                <select id="slotSelect" name="slot" required placeholder="time slot">
+                <input class="select-input" id="dateSelect" name="date" type="date" required placeholder="Date">
+                <select class="select-input" id="slotSelect" name="slot" required placeholder="Time">
                     <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
                 </select><br><br>
             <input type="submit" value="Check Availability" class="confirmBut"/>

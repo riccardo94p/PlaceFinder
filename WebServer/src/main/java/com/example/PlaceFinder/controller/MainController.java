@@ -13,11 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.math.BigInteger;
 import java.security.Principal;
 import java.sql.Date;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
@@ -165,7 +163,7 @@ public class MainController {
             model.addObject("username", userDetail.getUsername());
         }
 
-        model.setViewName("403");
+        model.setViewName("error");
         return model;
     }
 }

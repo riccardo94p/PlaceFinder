@@ -86,7 +86,6 @@ body {
     padding: 16px;
     font-size: 16px;
     border: none;
-    border-radius: 20%;
 }
 
 .dropdown {
@@ -109,6 +108,7 @@ body {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    font-size: 12pt;
 }
 .logoutbtn {
     font-weight: bold;
@@ -216,3 +216,13 @@ button:hover {
     opacity: 0.7;
 }
 .covid-notification:hover { opacity: 1; cursor: pointer;}
+
+.select-input {
+    padding: 1em;
+    opacity: 0.7;
+}
+
+.select-input:hover {
+    cursor: pointer;
+    opacity:1;
+}
