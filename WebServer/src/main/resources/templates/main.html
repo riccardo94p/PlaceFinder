@@ -13,6 +13,41 @@
             document.getElementById("dateSelect").setAttribute("min", today);
             //document.getElementsByName("somedate")[0].setAttribute('min', today);
         }
+
+        function insertMessage(username) {
+            var message = document.getElementById("message").value;
+            if (message.localeCompare("") === 0) {
+                alert("The message field is empty");
+                return;
+            }
+            var url = "/insertMessage" + "?message=" + message;
+            $.ajax({
+                'url' : url,
+                success: function (success) {
+                    if(!success) {
+                        alert("The insertion of the message failed");
+                        return;
+                    }
+                    var currentdate = new Date();
+                    var datetime = String(currentdate.getDate()).padStart(2, '0') + "/"
+                        + String((currentdate.getMonth()+1)).padStart(2, '0')  + "/"
+                        + currentdate.getFullYear() + " "
+                        + String(currentdate.getHours()).padStart(2, '0') + ":"
+                        + String(currentdate.getMinutes()).padStart(2, '0') + ":"
+                        + String(currentdate.getSeconds()).padStart(2, '0');
+                    var table = document.getElementById("bulletinBoard");
+                    var row = table.insertRow(1);
+                    var usernameCell = row.insertCell(0);
+                    var dateCell = row.insertCell(1);
+                    var messageCell = row.insertCell(2);
+                    usernameCell.innerHTML = username;
+                    dateCell.innerHTML = datetime;
+                    messageCell.innerHTML = message;
+                }
+                //'type' : "POST",
+                //'data' : {message: message}
+            });
+        }
     </script>
 </head>
 <body onload="setDatePicker()"><!-- th:with="uid=${username}">-->
@@ -45,11 +80,26 @@
             </form>
         </div>
         <div class="erlangWrapper">
+            <h3>Bulletin board</h3>
             <div id="erlangDiv">
                 <div class="board">
+                    <table id="bulletinBoard">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Publication time</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tr th:each="message: ${messages} ">
+                            <td th:utext="${message.username}">.....</td>
+                            <td th:utext="${message.getFormattedDateTime()}">.....</td>
+                            <td th:utext="${message.message}">.....</td>
+                        </tr>
+                    </table>
                 </div>
-                <input type="text" placeholder="Write a message to the Board..."><br>
-                <button>Post</button>
+                <input id="message" type="text" placeholder="Write a message to the Board..."><br>
+                <button type="Button" th:usr="${username}" th:onclick="insertMessage(this.getAttribute('usr'));">Post</button>
             </div>
         </div>
     </div>
