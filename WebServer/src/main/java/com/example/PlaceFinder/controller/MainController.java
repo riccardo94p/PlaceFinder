@@ -143,7 +143,6 @@ public class MainController {
 
         service.userReservation(username,slot,id,date);
 
-        //TODO: Redirect alla pagina dell'utente così vede la prenotazione appena effettuata
         return "main";
     }
 
