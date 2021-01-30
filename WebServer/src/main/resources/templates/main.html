@@ -10,8 +10,9 @@
         function setDatePicker() {
             //blocks all dates before current date
             var today = new Date().toISOString().split('T')[0];
-            document.getElementById("dateSelect").setAttribute("min", today);
-            //document.getElementsByName("somedate")[0].setAttribute('min', today);
+            var datepicker = document.getElementById("dateSelect")
+            datepicker.setAttribute("min", today);
+            datepicker.setAttribute("value", today);
         }
     </script>
 </head>
@@ -40,8 +41,8 @@
                 <input id="dateSelect" name="date" type="date" required placeholder="date">
                 <select id="slotSelect" name="slot" required placeholder="time slot">
                     <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
-                </select><br>
-            <input type="submit" value="Check Availability"/>
+                </select><br><br>
+            <input type="submit" value="Check Availability" class="confirmBut"/>
             </form>
         </div>
         <div class="erlangWrapper">

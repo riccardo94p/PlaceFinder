@@ -123,6 +123,10 @@ public class MainController {
         String username = auth.getName();
         int numReservations = service.getNumReservations(date,id,slot).intValue();
         int availableSeats = service.getAvailableSeats(id);
+        int status = (service.checkProfessorReservation(slot,id,date))?1:0; //1 if there is lesson, 0 otherwise
+        status = (availableSeats==0)?2:status; //if room is closed status = 2 otherwise do nothing
+
+        m.addAttribute("status", status);
         m.addAttribute("username", username);
         m.addAttribute("selectedRoom", id);
         m.addAttribute("selectedDate", date);
@@ -137,13 +141,14 @@ public class MainController {
     public String reservation(Authentication auth, @RequestParam(name="selectedRoom") String id,
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
-        String role = auth.getAuthorities().toString();
+        String role = auth.getAuthorities().toString().replaceAll("\\p{P}",""); //remove all brackets and unwanted chars
 
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
-        service.userReservation(username,slot,id,date);
+        if(role.equals("PROF")) service.professorReservation(username,slot,id,date);
+        else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);
 
-        return "main";
+        return "user";
     }
 
     //for 403 access denied page
