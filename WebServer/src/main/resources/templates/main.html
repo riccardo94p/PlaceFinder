@@ -21,6 +21,7 @@
                 return;
             }
             var url = "/insertMessage" + "?message=" + message;
+            document.getElementById("message").value = '';
             $.ajax({
                 'url' : url,
                 success: function (success) {
@@ -44,8 +45,6 @@
                     dateCell.innerHTML = datetime;
                     messageCell.innerHTML = message;
                 }
-                //'type' : "POST",
-                //'data' : {message: message}
             });
         }
     </script>
