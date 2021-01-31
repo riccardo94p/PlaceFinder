@@ -15,7 +15,7 @@
         <div class="dropdown-content">
             <a class="content" th:href="@{/main}">Home</a>
             <form id="logoutform" th:action="@{/logout}" method="post">
-                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
             </form>
             </a>
         </div>
@@ -40,7 +40,7 @@
 
                         <td th:utext="${r.reservationDate}">.....</td>
                         <td th:utext="${r.roomId}">.....</td>
-                        <td th:utext="${r.slotId}">.....</td>
+                        <td th:each="selectedSlot: ${r.slotId}" th:text="${slots[selectedSlot].startTime}+' - '+ ${slots[selectedSlot].endTime}">.....</td>
 
                         <td>
                             <button class="delete-reservation" type="Button" th:usr="${username}" th:slot="${r.slotId}" th:room="${r.roomId}" th:date="${r.reservationDate}" th:onclick="deleteUserReservation(this, this.getAttribute('usr'),this.getAttribute('slot'),this.getAttribute('room'),this.getAttribute('date'));">X</button>

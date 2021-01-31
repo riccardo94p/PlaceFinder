@@ -241,7 +241,7 @@ public class DBManagerImpl implements DBManager {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT * FROM Reservation R WHERE R.userId = ?;", Reservation.class);
+            Query q = entityManager.createNativeQuery("SELECT * FROM Reservation R WHERE R.userId = ? AND reservationDate >= CURRENT_DATE() ORDER BY reservationDate;", Reservation.class);
             q.setParameter(1, userId);
             r = q.getResultList();
             entityManager.getTransaction().commit();

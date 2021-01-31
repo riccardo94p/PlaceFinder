@@ -10,8 +10,12 @@
         function setDatePicker() {
             //blocks all dates before current date
             var today = new Date().toISOString().split('T')[0];
-            document.getElementById("dateSelect").setAttribute("min", today);
-            //document.getElementsByName("somedate")[0].setAttribute('min', today);
+            var datepicker = document.getElementById("dateSelect")
+            datepicker.setAttribute("min", today);
+            datepicker.setAttribute("value", today);
+        }
+        function dismissNotification(elem) {
+            elem.style.display = "none";
         }
 
         function insertMessage(username) {
@@ -57,25 +61,32 @@
             <div class="dropdown-content">
                 <a href="#" class="content" th:href="@{/user/__${username}__}">Profile</a>
                 <form id="logoutform" th:action="@{/logout}" method="post">
-                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
                 </form>
                 </a>
             </div>
         </div>
     </div>
-    <br><br><br>
+    <br><br>
     <div class="wrapper">
-
+        <div class="notification-wrapper">
+            <div th:switch="${notification}">
+                <div th:case="true" class="covid-notification" onclick="dismissNotification(this)">
+                   WARNING <br> You were traced as a potential contact of a confirmed Covid-19 case. Please take the necessary precautions.
+                </div>
+            </div>
+        </div>
+        <br><br>
         <div class="selectRoomDiv">
             <form th:action="@{/checkRoomStatus}" method="post">
-                <select id="roomSelect" name="id" required th:placeholder="Room_id">
+                <select class="select-input" id="roomSelect" name="id" required th:placeholder="Room">
                     <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
                 </select>
-                <input id="dateSelect" name="date" type="date" required placeholder="date">
-                <select id="slotSelect" name="slot" required placeholder="time slot">
+                <input class="select-input" id="dateSelect" name="date" type="date" required placeholder="Date">
+                <select class="select-input" id="slotSelect" name="slot" required placeholder="Time">
                     <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
-                </select><br>
-            <input type="submit" value="Check Availability"/>
+                </select><br><br>
+            <input type="submit" value="Check Availability" class="confirmBut"/>
             </form>
         </div>
         <div class="erlangWrapper">

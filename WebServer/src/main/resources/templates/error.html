@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<head>
+    <title>Main Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+</head>
+<body>
+    <div class="wrapper" style="text-align: center;">
+        <!--<img src="../static/img/errorimg.png" alt="img" width="160"/>-->
+        <br><br>
+        <h1>Oops! Something went wrong...</h1>
+        <div style="color:darkred;"><h2>Error <a th:utext="${errorcode}"></a></h2></div><br>
+        <button class="confirmBut" th:onclick="|window.location.href='@{/}'|">Back Home</button>
+    </div>
+</body>
+</html>

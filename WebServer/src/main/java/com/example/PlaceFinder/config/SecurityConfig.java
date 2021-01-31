@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/", "/login", "/style.css").permitAll()
                     .antMatchers("/main/**").hasAnyAuthority("STUDENT", "PROF")
                     .antMatchers("/reservation/**").hasAnyAuthority("STUDENT", "PROF")
+                    .antMatchers("/user/**").hasAnyAuthority("STUDENT", "PROF")
                     .antMatchers("/admin/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
                     .and()
@@ -51,9 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")//.failureUrl("/login?error=true")
                     .permitAll()
                     .and()
-                .logout().permitAll()
-                    .and()
-                .exceptionHandling().accessDeniedPage("/403");
+                .logout().permitAll();
+                    /*.and()
+                .exceptionHandling().accessDeniedPage("/403");*/
     }
 
     @Override

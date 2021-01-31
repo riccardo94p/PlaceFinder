@@ -24,7 +24,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private ApplicationContext ctx;
+    private DBManager service;
 
     @GetMapping("/user/{username}")
     public String profileGet(Model model, Principal principal)
@@ -32,14 +32,15 @@ public class UserController {
         String username = principal.getName();
         model.addAttribute("username", username);
 
-        DBManager service = ctx.getBean(DBManager.class);
         List<Reservation> rList = service.browseUserReservations(username);
         List<ReservationId> rId = new ArrayList<ReservationId>();
+        List<Slot> slots = service.browseSlots();
 
         for(Reservation r : rList)
             rId.add(r.getId());
 
         model.addAttribute("reservation", rId);
+        model.addAttribute("slots", slots);
         return "user";
     }
 
@@ -48,7 +49,6 @@ public class UserController {
 
         System.out.println("Deleting reservation...");
 
-        DBManager service = ctx.getBean(DBManager.class);
         service.deleteUserReservation(userId, slotId, roomId, reservationDate);
 
         String username = principal.getName();
