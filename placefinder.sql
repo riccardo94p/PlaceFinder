@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `placefinder` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `placefinder`;
--- MySQL dump 10.13  Distrib 8.0.22, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.23, for macos10.15 (x86_64)
 --
 -- Host: localhost    Database: placefinder
 -- ------------------------------------------------------
--- Server version	8.0.22-0ubuntu0.20.04.3
+-- Server version	8.0.23
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -44,7 +42,7 @@ CREATE TABLE `Reservation` (
 
 LOCK TABLES `Reservation` WRITE;
 /*!40000 ALTER TABLE `Reservation` DISABLE KEYS */;
-INSERT INTO `Reservation` VALUES ('aaa1',0,'a11','2021-01-23'),('aaa2',0,'a11','2021-01-23'),('aaa3',0,'a11','2021-01-23'),('aaa6',0,'a11','2021-01-23'),('zzzz',0,'a11','2021-01-20'),('aaa2',1,'a11','2021-01-23'),('bbb1',1,'b21','2021-01-23'),('bbb1',1,'f4','2021-01-10'),('aaa1',3,'f6','2021-01-20'),('aaa4',3,'f6','2021-01-20'),('aaa1',4,'f1','2021-01-16'),('aaa2',4,'f1','2021-01-10');
+INSERT INTO `Reservation` VALUES ('r.polini',1,'B21','2021-02-11'),('g.alvaro',2,'A14','2021-02-04'),('c.aparo',3,'A11','2021-02-06'),('c.aparo',3,'B21','2021-01-31'),('g.alvaro',3,'A11','2021-02-06'),('l.fontanelli',3,'A11','2021-02-06'),('r.polini',3,'A11','2021-02-06'),('g.alvaro',4,'F3','2021-02-04');
 /*!40000 ALTER TABLE `Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +67,7 @@ CREATE TABLE `Room` (
 
 LOCK TABLES `Room` WRITE;
 /*!40000 ALTER TABLE `Room` DISABLE KEYS */;
-INSERT INTO `Room` VALUES ('a11',50,1),('a12',50,1),('a13',50,1),('a14',50,1),('b12',200,1),('b21',200,1),('b22',30,1),('b31',150,1),('b34',50,1),('f1',150,1),('f2',150,1),('f3',150,1),('f4',150,1),('f5',150,1),('f6',200,1);
+INSERT INTO `Room` VALUES ('A11',50,1),('A12',50,1),('A13',50,1),('A14',50,1),('B11',200,0.2),('B12',200,1),('B21',200,1),('B22',30,1),('B31',150,1),('B34',50,1),('F1',150,1),('F2',150,0),('F3',150,1),('F4',150,1),('F5',150,1),('F6',200,1),('SI4',30,1),('SI5',25,0.7);
 /*!40000 ALTER TABLE `Room` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +118,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES ('aaa1','test','STUDENT',0),('aaa2','test','STUDENT',0),('aaa3','test','STUDENT',0),('aaa4','test','STUDENT',0),('aaa5','test','STUDENT',0),('aaa6','test','STUDENT',0),('aaa7','test','STUDENT',0),('admin1','test','ADMIN',0),('bbb1','test','PROF',0),('zzzz','test','STUDENT',0);
+INSERT INTO `User` VALUES ('a.bechini','test','PROF',0),('admin','test','ADMIN',0),('c.aparo','test','STUDENT',0),('c.baglioni','test','PROF',0),('g.alvaro','test','STUDENT',0),('l.fontanelli','test','STUDENT',0),('r.polini','test','STUDENT',0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -133,4 +131,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-26 22:02:06
+-- Dump completed on 2021-01-31 14:37:17
