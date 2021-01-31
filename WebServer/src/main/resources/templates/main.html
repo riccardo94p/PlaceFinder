@@ -9,11 +9,16 @@
     <script type="text/javascript">
         function setDatePicker() {
             //blocks all dates before current date
-            var today = new Date().toISOString().split('T')[0];
-            var datepicker = document.getElementById("dateSelect")
-            datepicker.setAttribute("min", today);
-            datepicker.setAttribute("value", today);
+            var today = new Date();
+            var tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow = tomorrow.toISOString().split('T')[0];
+
+            var datepicker = document.getElementById("dateSelect");
+            datepicker.setAttribute("min", tomorrow);
+            datepicker.setAttribute("value", tomorrow);
         }
+      
         function dismissNotification(elem) {
             var url = "/dismissNotification";
             $.ajax({
@@ -78,7 +83,7 @@
         <div class="notification-wrapper">
             <div th:switch="${notification}">
                 <div th:case="true" class="covid-notification" onclick="dismissNotification(this)">
-                   WARNING <br> You were traced as a potential contact of a confirmed Covid-19 case. Please take the necessary precautions.
+                   WARNING <br> You were traced as a potential contact of a confirmed Covid-19 case in the past week. Please take the necessary precautions.
                 </div>
             </div>
         </div>
