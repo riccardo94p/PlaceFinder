@@ -18,6 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 import java.sql.Date;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
@@ -171,7 +174,10 @@ public class MainController {
 
         if(role.equals("PROF")){
             service.professorReservation(username,slot,id,date);
-            String message = "Professor " + username + " has reserved room " + id + " in date " + date.toString() + ". Check your reservation page.";
+            String format = "dd/MM/yyyy";
+            DateFormat formatter = new SimpleDateFormat(format);
+            String formattedDate = formatter.format(date);
+            String message = "Professor " + username + " has reserved room " + id + " in date " + formattedDate + ". Check your reservation page.";
             boardClient.insertMessage("System", message);
         }
         else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);

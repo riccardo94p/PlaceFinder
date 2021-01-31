@@ -56,14 +56,16 @@
                         //var url = "/updateStatus"+"?ip="+ip+"&resource="+resource+"&status="+status;
                         //$('#listDiv').load(url);
                         $.ajax({
-                            'url' : url
+                            'url' : url,
+                            success : function(success){
+                                if(success) {
+                                    var row = elem.parentNode.parentNode;
+                                    var rowIndex = row.rowIndex;
+                                    var table = row.parentNode.parentNode;
+                                    table.deleteRow(rowIndex);
+                                }
+                            }
                         });
-
-                        var row = elem.parentNode.parentNode;
-                        var rowIndex = row.rowIndex;
-                        var table = row.parentNode.parentNode;
-                        table.deleteRow(rowIndex);
-
                     }
                 </script>
     </div>
