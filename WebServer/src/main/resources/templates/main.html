@@ -14,9 +14,19 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow = tomorrow.toISOString().split('T')[0];
 
-            var datepicker = document.getElementById("dateSelect")
+            var datepicker = document.getElementById("dateSelect");
             datepicker.setAttribute("min", tomorrow);
             datepicker.setAttribute("value", tomorrow);
+        }
+      
+        function dismissNotification(elem) {
+            var url = "/dismissNotification";
+            $.ajax({
+                'url' : url,
+                success: function (success){
+                    elem.style.display = "none";
+                }
+            });
         }
 
         function insertMessage(username) {
