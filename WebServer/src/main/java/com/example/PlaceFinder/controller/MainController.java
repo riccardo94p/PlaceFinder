@@ -169,7 +169,11 @@ public class MainController {
         String role = auth.getAuthorities().toString().replaceAll("\\p{P}",""); //remove all brackets and unwanted chars
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
-        if(role.equals("PROF")) service.professorReservation(username,slot,id,date);
+        if(role.equals("PROF")){
+            service.professorReservation(username,slot,id,date);
+            String message = "Professor " + username + " has reserved room " + id + " in date " + date.toString() + ". Check your reservation page.";
+            boardClient.insertMessage("System", message);
+        }
         else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);
 
         return "user";
@@ -180,7 +184,6 @@ public class MainController {
     public boolean dismissNotification(Principal principal){
         return service.deleteNotification(principal.getName());
     }
-
 
 
     //for 403 access denied page
