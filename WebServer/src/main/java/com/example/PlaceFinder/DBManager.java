@@ -9,13 +9,11 @@ import java.sql.Date;
 
 public interface DBManager {
 
-    //void setup();
     void exit();
     User getUser(String username);
     List<User> browseUsers();
     List<Slot> browseSlots();
     Slot findSlotById(int id);
-    boolean login(String username, String password);
     List<Reservation> browseUserReservations(String userId);
     boolean notifyCovidContact(String userId);
     boolean userReservation(String userid, int slotid, String roomid, Date date);
@@ -27,6 +25,4 @@ public interface DBManager {
     boolean changeCapacity(String roomid, float capacity);
     BigInteger getNumReservations(Date date, String room, int slot);
     int getAvailableSeats(String roomid);
-
-    List<Object> getAvailabilityList(Date date, int slot);
 }
