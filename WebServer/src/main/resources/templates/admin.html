@@ -5,6 +5,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript">
+        function deleteMessage(elem, id) {
+            var url = "/deleteMessage?id=" + id;
+            $.ajax({
+                url: url,
+                success: function (success) {
+                    if(!success) {
+                        alert("The deletion of the message failed");
+                        return;
+                    }
+                    var row = elem.parentNode.parentNode;
+                    var rowIndex = row.rowIndex;
+                    var table = row.parentNode.parentNode;
+                    table.deleteRow(rowIndex);
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -76,6 +94,30 @@
                 </select>
                 <input class="confirmBut" type="submit" value="Notify"/>
             </form>
+        </div>
+        <div class="erlangWrapper">
+            <h3>Bulletin board</h3>
+            <div class="board">
+                <table id="bulletinBoard">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Publication time</th>
+                        <th>Message</th>
+                        <th>Delete message</th>
+                    </tr>
+                    </thead>
+                    <tr th:each="message: ${messages} ">
+                        <td th:utext="${message.username}">.....</td>
+                        <td th:utext="${message.getFormattedDateTime()}">.....</td>
+                        <td th:utext="${message.message}">.....</td>
+                        <td>
+                            <button class="delete-reservation" type="Button" th:id="${message.id}"
+                                    th:onclick="deleteMessage(this, this.getAttribute('id'));">X</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </body>

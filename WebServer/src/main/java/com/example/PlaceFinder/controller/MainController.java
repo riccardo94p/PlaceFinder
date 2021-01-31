@@ -1,6 +1,8 @@
 package com.example.PlaceFinder.controller;
 
+import com.example.PlaceFinder.BoardClient;
 import com.example.PlaceFinder.DBManager;
+import com.example.PlaceFinder.Message;
 import com.example.PlaceFinder.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +28,8 @@ public class MainController {
     private ApplicationContext ctx;
     @Autowired
     private DBManager service;
+    @Autowired
+    private BoardClient boardClient;
 
     @GetMapping("/testconcurrentreserve")
     public @ResponseBody void testconcurrentreserve(@RequestParam String username, @RequestParam int slotId,
@@ -64,9 +68,13 @@ public class MainController {
         List<Slot> slots = service.browseSlots();
         List<Room> rooms = service.getRooms();
 
+        List<Message> messages = boardClient.readMessages(10);
+        messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
+
         model.addAttribute("rooms", rooms);
         model.addAttribute("slots", slots);
         model.addAttribute("username", username);//loggedUser.getUsername());
+        model.addAttribute("messages", messages);
         model.addAttribute("notification", u.getCovidNotification());
         return "main";
     }
@@ -78,9 +86,12 @@ public class MainController {
 
         List<Room> rooms = service.getRooms();
         List<User> users = service.browseUsers();
+        List<Message> messages = boardClient.readMessages(10);
+        messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
 
         model.addAttribute("rooms", rooms);
         model.addAttribute("users", users);
+        model.addAttribute("messages", messages);
         return "admin";
     }
 
@@ -113,6 +124,21 @@ public class MainController {
         //This is only meant for demonstration purposes
         service.notifyCovidContact(id);
         return "admin";
+    }
+
+    @RequestMapping(value = "/insertMessage")
+    @ResponseBody
+    public boolean insertMessage(Principal principal, @RequestParam String message) {
+        String username = principal.getName();
+        boolean success = boardClient.insertMessage(username, message);
+        return success;
+    }
+
+    @RequestMapping(value = "/deleteMessage")
+    @ResponseBody
+    public boolean deleteMessage(@RequestParam long id) {
+        boolean success = boardClient.deleteMessage(id);
+        return success;
     }
 
     @RequestMapping("/checkRoomStatus")
