@@ -167,7 +167,6 @@ public class MainController {
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
         String role = auth.getAuthorities().toString().replaceAll("\\p{P}",""); //remove all brackets and unwanted chars
-
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
         if(role.equals("PROF")) service.professorReservation(username,slot,id,date);
@@ -175,6 +174,14 @@ public class MainController {
 
         return "user";
     }
+
+    @RequestMapping("/dismissNotification")
+    @ResponseBody
+    public boolean dismissNotification(Principal principal){
+        return service.deleteNotification(principal.getName());
+    }
+
+
 
     //for 403 access denied page
     @RequestMapping(value = "/403", method = RequestMethod.GET)

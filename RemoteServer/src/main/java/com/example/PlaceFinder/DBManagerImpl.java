@@ -334,6 +334,27 @@ public class DBManagerImpl implements DBManager {
     }
 
     @Synchronized
+    public boolean deleteNotification(String username){
+        boolean result = true;
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("UPDATE User SET covidNotification = 0 WHERE username = ?;", User.class);
+            q.setParameter(1, username);
+            q.executeUpdate();
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the deleteNotification()");
+            result = false;
+        }
+        finally {
+            entityManager.close();
+        }
+        return result;
+    }
+
+    @Synchronized
     //deletes all reservatons for a given room
     private void deleteReservations(String roomid) {
         try {

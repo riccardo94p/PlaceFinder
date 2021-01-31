@@ -15,7 +15,13 @@
             datepicker.setAttribute("value", today);
         }
         function dismissNotification(elem) {
-            elem.style.display = "none";
+            var url = "/dismissNotification";
+            $.ajax({
+                'url' : url,
+                success: function (success){
+                    elem.style.display = "none";
+                }
+            });
         }
 
         function insertMessage(username) {
