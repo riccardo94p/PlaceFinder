@@ -5,6 +5,7 @@ import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
 import lombok.Synchronized;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
@@ -92,7 +93,7 @@ public class DBManagerImpl implements DBManager {
         return true;
     }
 
-    @Synchronized
+    @Synchronized //forse non serve?
     private boolean getSeatAvailability(int slotid, String roomid, Date date) {
         int availableSeats = getAvailableSeats(roomid);
         BigInteger count = getNumReservations(date, roomid, slotid);
