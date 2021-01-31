@@ -10,8 +10,46 @@
         function setDatePicker() {
             //blocks all dates before current date
             var today = new Date().toISOString().split('T')[0];
-            document.getElementById("dateSelect").setAttribute("min", today);
-            //document.getElementsByName("somedate")[0].setAttribute('min', today);
+            var datepicker = document.getElementById("dateSelect")
+            datepicker.setAttribute("min", today);
+            datepicker.setAttribute("value", today);
+        }
+        function dismissNotification(elem) {
+            elem.style.display = "none";
+        }
+
+        function insertMessage(username) {
+            var message = document.getElementById("message").value;
+            if (message.localeCompare("") === 0) {
+                alert("The message field is empty");
+                return;
+            }
+            var url = "/insertMessage" + "?message=" + message;
+            document.getElementById("message").value = '';
+            $.ajax({
+                'url' : url,
+                success: function (success) {
+                    if(!success) {
+                        alert("The insertion of the message failed");
+                        return;
+                    }
+                    var currentdate = new Date();
+                    var datetime = String(currentdate.getDate()).padStart(2, '0') + "/"
+                        + String((currentdate.getMonth()+1)).padStart(2, '0')  + "/"
+                        + currentdate.getFullYear() + " "
+                        + String(currentdate.getHours()).padStart(2, '0') + ":"
+                        + String(currentdate.getMinutes()).padStart(2, '0') + ":"
+                        + String(currentdate.getSeconds()).padStart(2, '0');
+                    var table = document.getElementById("bulletinBoard");
+                    var row = table.insertRow(1);
+                    var usernameCell = row.insertCell(0);
+                    var dateCell = row.insertCell(1);
+                    var messageCell = row.insertCell(2);
+                    usernameCell.innerHTML = username;
+                    dateCell.innerHTML = datetime;
+                    messageCell.innerHTML = message;
+                }
+            });
         }
     </script>
 </head>
@@ -23,33 +61,55 @@
             <div class="dropdown-content">
                 <a href="#" class="content" th:href="@{/user/__${username}__}">Profile</a>
                 <form id="logoutform" th:action="@{/logout}" method="post">
-                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
                 </form>
                 </a>
             </div>
         </div>
     </div>
-    <br><br><br>
+    <br><br>
     <div class="wrapper">
-
+        <div class="notification-wrapper">
+            <div th:switch="${notification}">
+                <div th:case="true" class="covid-notification" onclick="dismissNotification(this)">
+                   WARNING <br> You were traced as a potential contact of a confirmed Covid-19 case. Please take the necessary precautions.
+                </div>
+            </div>
+        </div>
+        <br><br>
         <div class="selectRoomDiv">
             <form th:action="@{/checkRoomStatus}" method="post">
-                <select id="roomSelect" name="id" required th:placeholder="Room_id">
+                <select class="select-input" id="roomSelect" name="id" required th:placeholder="Room">
                     <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
                 </select>
-                <input id="dateSelect" name="date" type="date" required placeholder="date">
-                <select id="slotSelect" name="slot" required placeholder="time slot">
+                <input class="select-input" id="dateSelect" name="date" type="date" required placeholder="Date">
+                <select class="select-input" id="slotSelect" name="slot" required placeholder="Time">
                     <option th:each="slot: ${slots}" th:text="${slot.startTime} +' - '+ ${slot.endTime}" th:value="${slot.idSlot}"></option>
-                </select><br>
-            <input type="submit" value="Check Availability"/>
+                </select><br><br>
+            <input type="submit" value="Check Availability" class="confirmBut"/>
             </form>
         </div>
         <div class="erlangWrapper">
+            <h3>Bulletin board</h3>
             <div id="erlangDiv">
                 <div class="board">
+                    <table id="bulletinBoard">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Publication time</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tr th:each="message: ${messages} ">
+                            <td th:utext="${message.username}">.....</td>
+                            <td th:utext="${message.getFormattedDateTime()}">.....</td>
+                            <td th:utext="${message.message}">.....</td>
+                        </tr>
+                    </table>
                 </div>
-                <input type="text" placeholder="Write a message to the Board..."><br>
-                <button>Post</button>
+                <input id="message" type="text" placeholder="Write a message to the Board..."><br>
+                <button type="Button" th:usr="${username}" th:onclick="insertMessage(this.getAttribute('usr'));">Post</button>
             </div>
         </div>
     </div>

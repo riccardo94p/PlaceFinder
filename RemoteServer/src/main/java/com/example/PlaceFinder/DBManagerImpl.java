@@ -5,6 +5,7 @@ import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
 import lombok.Synchronized;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
@@ -92,7 +93,7 @@ public class DBManagerImpl implements DBManager {
         return true;
     }
 
-    @Synchronized
+    @Synchronized //forse non serve?
     private boolean getSeatAvailability(int slotid, String roomid, Date date) {
         int availableSeats = getAvailableSeats(roomid);
         BigInteger count = getNumReservations(date, roomid, slotid);
@@ -241,7 +242,7 @@ public class DBManagerImpl implements DBManager {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT * FROM Reservation R WHERE R.userId = ?;", Reservation.class);
+            Query q = entityManager.createNativeQuery("SELECT * FROM Reservation R WHERE R.userId = ? AND reservationDate >= CURRENT_DATE() ORDER BY reservationDate;", Reservation.class);
             q.setParameter(1, userId);
             r = q.getResultList();
             entityManager.getTransaction().commit();

@@ -13,15 +13,14 @@
             var slot = document.getElementById("slotSelect").textContent;
 
             var urlstring = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
-            //alert("reserve():" +url);
+
             $.ajax({
                 url : urlstring,
                 success: function(response) {
                     //alert(response);
-                    //location.replace(response);
+                    location.replace(response+"/"+username);
                 }
             });
-            location.replace("user/"+username);
         }
     </script>
 </head>
@@ -29,7 +28,7 @@
 <script type="text/javascript" th:inline="javascript">
     function disableButton(reservedSeats, availableSeats){
         var elem = document.getElementById("confirmButton");
-        if(reservedSeats == availableSeats){
+        if(availableSeats === 0 || reservedSeats===availableSeats){
             elem.disabled = true;
         }
         else{
@@ -44,7 +43,7 @@
         <div class="dropdown-content">
             <a class="content" th:href="@{/main}">Home</a>
             <form id="logoutform" th:action="@{/logout}" method="post">
-                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();">Sign Out</a>
+                <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
             </form>
             </a>
         </div>
@@ -58,9 +57,10 @@
                 <tr>
                     <th>ROOM</th>
                     <th>DATE</th>
-                    <th>SLOT</th>
+                    <th>TIME</th>
                     <th hidden></th>
-                    <th>AVAILABILITY</th>
+                    <th>OCCUPIED SEATS</th>
+                    <th>STATUS</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,11 +70,19 @@
                     <td id="slotSelect" hidden th:each="selectedSlot: ${selectedSlots}" th:utext="${selectedSlot.idSlot}"></td>
                     <td th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}"></td>
                     <td th:utext="${reservedSeats} +' / '+ ${availableSeats}"></td>
+                    <td th:switch="${status}">
+                        <p th:case="0" style="font-weight: bold; color:green;">Open</p>
+                        <p th:case="1" style="font-weight: bold; color:gold;">Lesson</p>
+                        <p th:case="2" style="font-weight: bold; color:darkred;">Closed</p>
+                    </td>
 
                 </tr>
             </tbody>
         </table>
-        <button id="confirmButton" th:usr="${username}" onclick="reserve(this.getAttribute('usr'))" >Confirm</button>
+        <br>
+        <button id="confirmButton" class="confirmBut" th:usr="${username}" onclick="reserve(this.getAttribute('usr'))" >Confirm</button>
+        <br><br>
+        <button class="confirmBut" th:onclick="|window.location.href='@{/main}'|">Cancel</button>
     </div>
 </div>
 </body>

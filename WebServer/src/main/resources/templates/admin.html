@@ -5,30 +5,50 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}" />
+    <script type="text/javascript">
+        function deleteMessage(elem, id) {
+            var url = "/deleteMessage?id=" + id;
+            $.ajax({
+                url: url,
+                success: function (success) {
+                    if(!success) {
+                        alert("The deletion of the message failed");
+                        return;
+                    }
+                    var row = elem.parentNode.parentNode;
+                    var rowIndex = row.rowIndex;
+                    var table = row.parentNode.parentNode;
+                    table.deleteRow(rowIndex);
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
-    <div id="wrapper" style="width:100%; height:100%;">
-        <div class="titleBar">
-            <!--<img src="icon.png" style="width:40px; height:40px;" alt=""/>-->
-            Place Finder
+    <div class="titleBar">
+        <a style="font-weight: bold; font-size: 22pt;">Place Finder</a>
+        <div class="dropdown">
+            <button th:utext="${username}" class="dropbtn"></button>
+            <div class="dropdown-content">
+                <form id="logoutform" th:action="@{/logout}" method="post">
+                    <a href="#" class="logoutbtn" onclick="document.getElementById('logoutform').submit();" style="color:darkred;">Sign Out</a>
+                </form>
+                </a>
+            </div>
         </div>
+    </div>
+    <br><br>
+    <div id="wrapper" style="width:100%; height:100%;">
 
-        <br>
-            <a style="text-align: right">Welcome <span th:utext="${username}"></span> | </a>
-            <form th:action="@{/logout}" method="post">
-                <input type="submit" value="Sign Out"/>
-            </form>
-        <br><br><br>
-
-        <h2 style="text-align: center">Administration Panel</h2>
+        <h3 style="text-align: center">Administration Panel</h3>
 
         <div id="insertRoomDiv">
             <a>Insert a new Room:</a>
             <form th:action="@{/addRoom}" method="post">
-                <input name="id" type="text" required placeholder="Room_id">
-                <input name="numseats" type="number" required placeholder="Num_seats">
-                <select name="capacity" required placeholder="Capacity%">
+                <input class="select-input" name="id" type="text" required placeholder="Room_id">
+                <input class="select-input" name="numseats" type="number" required placeholder="Num_seats">
+                <select class="select-input" name="capacity" required placeholder="Capacity%">
                     <option value="0">Closed</option>
                     <option value="0.1">10%</option>
                     <option value="0.2">20%</option>
@@ -41,16 +61,16 @@
                     <option value="0.9">90%</option>
                     <option value="1">100%</option>
                 </select>
-                <input type="submit" value="Submit"/>
+                <input class="confirmBut" type="submit" value="Submit"/>
             </form>
         </div>
         <div  id="editRoomDiv">
             <a>Edit Room Capacity:</a>
             <form th:action="@{/editCapacity}" method="post">
-                <select name="id" required th:placeholder="Room_id">
+                <select class="select-input" name="id" required th:placeholder="Room_id">
                     <option th:each="room: ${rooms}" th:utext="${room.idRoom}" th:value="${room.idRoom}"></option>
                 </select>
-                <select name="capacity" required placeholder="Capacity%">
+                <select class="select-input" name="capacity" required placeholder="Capacity%">
                     <option value="0">Closed</option>
                     <option value="0.1">10%</option>
                     <option value="0.2">20%</option>
@@ -63,17 +83,41 @@
                     <option value="0.9">90%</option>
                     <option value="1">100%</option>
                 </select>
-                <input type="submit" value="Submit"/>
+                <input class="confirmBut" type="submit" value="Submit"/>
             </form>
         </div>
         <div id="covidDiv">
             <a>Emit a Covid-19 Notification:</a>
             <form th:action="@{/notifyCovid}" method="post">
-                <select name="id" required th:placeholder="User_id">
+                <select class="select-input" name="id" required th:placeholder="User_id">
                     <option th:each="user: ${users}" th:utext="${user.username}" th:value="${user.username}"></option>
                 </select>
-                <input type="submit" value="Notify"/>
+                <input class="confirmBut" type="submit" value="Notify"/>
             </form>
+        </div>
+        <div class="erlangWrapper">
+            <h3>Bulletin board</h3>
+            <div class="board">
+                <table id="bulletinBoard">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Publication time</th>
+                        <th>Message</th>
+                        <th>Delete message</th>
+                    </tr>
+                    </thead>
+                    <tr th:each="message: ${messages} ">
+                        <td th:utext="${message.username}">.....</td>
+                        <td th:utext="${message.getFormattedDateTime()}">.....</td>
+                        <td th:utext="${message.message}">.....</td>
+                        <td>
+                            <button class="delete-reservation" type="Button" th:id="${message.id}"
+                                    th:onclick="deleteMessage(this, this.getAttribute('id'));">X</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </body>

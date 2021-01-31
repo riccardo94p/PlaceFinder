@@ -1,6 +1,8 @@
 package com.example.PlaceFinder.controller;
 
+import com.example.PlaceFinder.BoardClient;
 import com.example.PlaceFinder.DBManager;
+import com.example.PlaceFinder.Message;
 import com.example.PlaceFinder.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -13,11 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.math.BigInteger;
 import java.security.Principal;
 import java.sql.Date;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
@@ -28,6 +28,8 @@ public class MainController {
     private ApplicationContext ctx;
     @Autowired
     private DBManager service;
+    @Autowired
+    private BoardClient boardClient;
 
     @GetMapping("/testconcurrentreserve")
     public @ResponseBody void testconcurrentreserve(@RequestParam String username, @RequestParam int slotId,
@@ -62,13 +64,18 @@ public class MainController {
     @RequestMapping(value="/main", method = RequestMethod.GET)
     public String main(Model model, Principal principal) {
         String username = principal.getName();
-
+        User u = service.getUser(username);
         List<Slot> slots = service.browseSlots();
         List<Room> rooms = service.getRooms();
+
+        List<Message> messages = boardClient.readMessages(10);
+        messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
 
         model.addAttribute("rooms", rooms);
         model.addAttribute("slots", slots);
         model.addAttribute("username", username);//loggedUser.getUsername());
+        model.addAttribute("messages", messages);
+        model.addAttribute("notification", u.getCovidNotification());
         return "main";
     }
 
@@ -79,9 +86,12 @@ public class MainController {
 
         List<Room> rooms = service.getRooms();
         List<User> users = service.browseUsers();
+        List<Message> messages = boardClient.readMessages(10);
+        messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
 
         model.addAttribute("rooms", rooms);
         model.addAttribute("users", users);
+        model.addAttribute("messages", messages);
         return "admin";
     }
 
@@ -116,6 +126,21 @@ public class MainController {
         return "admin";
     }
 
+    @RequestMapping(value = "/insertMessage")
+    @ResponseBody
+    public boolean insertMessage(Principal principal, @RequestParam String message) {
+        String username = principal.getName();
+        boolean success = boardClient.insertMessage(username, message);
+        return success;
+    }
+
+    @RequestMapping(value = "/deleteMessage")
+    @ResponseBody
+    public boolean deleteMessage(@RequestParam long id) {
+        boolean success = boardClient.deleteMessage(id);
+        return success;
+    }
+
     @RequestMapping("/checkRoomStatus")
     public String checkRoomStatus(Authentication auth, Model m, @RequestParam String id, @RequestParam Date date, @RequestParam int slot) {
         System.out.println("/checkRoomStatus called with params: "+id+" "+date+" "+slot);
@@ -123,6 +148,10 @@ public class MainController {
         String username = auth.getName();
         int numReservations = service.getNumReservations(date,id,slot).intValue();
         int availableSeats = service.getAvailableSeats(id);
+        int status = (service.checkProfessorReservation(slot,id,date))?1:0; //1 if there is lesson, 0 otherwise
+        status = (availableSeats==0)?2:status; //if room is closed status = 2 otherwise do nothing
+
+        m.addAttribute("status", status);
         m.addAttribute("username", username);
         m.addAttribute("selectedRoom", id);
         m.addAttribute("selectedDate", date);
@@ -137,13 +166,14 @@ public class MainController {
     public String reservation(Authentication auth, @RequestParam(name="selectedRoom") String id,
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
-        String role = auth.getAuthorities().toString();
+        String role = auth.getAuthorities().toString().replaceAll("\\p{P}",""); //remove all brackets and unwanted chars
 
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
-        service.userReservation(username,slot,id,date);
+        if(role.equals("PROF")) service.professorReservation(username,slot,id,date);
+        else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);
 
-        return "main";
+        return "user";
     }
 
     //for 403 access denied page
@@ -159,7 +189,7 @@ public class MainController {
             model.addObject("username", userDetail.getUsername());
         }
 
-        model.setViewName("403");
+        model.setViewName("error");
         return model;
     }
 }
