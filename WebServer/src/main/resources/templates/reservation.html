@@ -9,8 +9,10 @@
     <script type="text/javascript" th:inline="javascript">
         function reserve(username) {
             var room = document.getElementById("roomSelect").textContent;
-            var date = document.getElementById("dateSelect").textContent;
+            var formattedDate = document.getElementById("dateSelect").textContent;
             var slot = document.getElementById("slotSelect").textContent;
+            var dateArray = formattedDate.split('/');
+            var date = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
 
             var urlstring = "/reservation"+"?selectedRoom="+room+"&selectedDate="+date+"&selectedSlot="+slot;
 
@@ -66,7 +68,7 @@
             <tbody>
                 <tr>
                     <td id="roomSelect" th:utext="${selectedRoom}"></td>
-                    <td id="dateSelect" th:utext="${selectedDate}"></td>
+                    <td id="dateSelect" th:utext="${#dates.format(selectedDate, 'dd/MM/yyyy')}"></td>
                     <td id="slotSelect" hidden th:each="selectedSlot: ${selectedSlots}" th:utext="${selectedSlot.idSlot}"></td>
                     <td th:each="selectedSlot: ${selectedSlots}" th:text="${selectedSlot.startTime} +' - '+ ${selectedSlot.endTime}"></td>
                     <td th:utext="${reservedSeats} +' / '+ ${availableSeats}"></td>
