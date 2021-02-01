@@ -21,3 +21,5 @@ Avviare il server:
 
 Spegnere il server:
 > board_server:stop_server().
+
+erl -sname board_server@localhost -setcookie 'board' -mnesia dir '"Database"'
