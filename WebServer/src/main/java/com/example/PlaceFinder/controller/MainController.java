@@ -82,7 +82,7 @@ public class MainController {
         return "main";
     }
 
-    @RequestMapping("/admin")
+    @GetMapping("/admin")
     public String admin(Model model, Principal principal) {
         String username = principal.getName();
         model.addAttribute("username", username);
@@ -107,8 +107,7 @@ public class MainController {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
         service.addRoom(id, numseats, capacity);
-
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping("/editCapacity")
@@ -117,16 +116,16 @@ public class MainController {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
         service.changeCapacity(id, capacity);
-
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping("/notifyCovid")
     public String notifyCovid(Model m, @RequestParam String id) {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
+
         service.notifyCovidContact(id);
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping(value = "/insertMessage")
