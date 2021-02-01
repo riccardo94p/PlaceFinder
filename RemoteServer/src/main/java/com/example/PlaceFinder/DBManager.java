@@ -16,7 +16,6 @@ public interface DBManager {
     List<User> browseUsers();
     List<Slot> browseSlots();
     Slot findSlotById(int slotId);
-    boolean login(String username, String password);
     List<Reservation> browseUserReservations(String userId);
     boolean notifyCovidContact(String userId);
     boolean userReservation(String userid, int slotid, String roomid, Date date);
@@ -28,4 +27,5 @@ public interface DBManager {
     boolean changeCapacity(String roomid, float capacity);
     int getAvailableSeats(String roomid);
     BigInteger getNumReservations(Date date, String room, int slot);
+    boolean deleteNotification(String username);
 }

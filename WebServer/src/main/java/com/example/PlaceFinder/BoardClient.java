@@ -7,14 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Component
+@Component
 public class BoardClient {
-    private final String serverNodeName = "board_server@192.168.1.59";
+    private final String serverNodeName = "board_server@localhost";
     private final String serverName = "board_server";
     private OtpMbox mbox;
 
     public BoardClient() {
-        String nodeName = "board_client@192.168.1.70";
+        String nodeName = "board_client@localhost";
         String mBoxName = "board_client";
         String cookie = "board";
         try {

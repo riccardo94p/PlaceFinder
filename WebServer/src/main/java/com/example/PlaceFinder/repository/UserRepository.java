@@ -14,9 +14,10 @@ public class UserRepository {
     //User findByUsername(String username);
     @Autowired
     private ApplicationContext ctx;
+    @Autowired
+    private DBManager service;
 
     public User findByUsername(String username) {
-        DBManager service = ctx.getBean(DBManager.class);
         return service.getUser(username);
     }
 }

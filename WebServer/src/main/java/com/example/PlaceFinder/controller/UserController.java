@@ -45,12 +45,12 @@ public class UserController {
     }
 
     @GetMapping("/deleteUserReservation")
-    public String deleteUserReservation(@RequestParam(required = true, value = "userId") String userId, @RequestParam(required = true, value = "slotId") Integer slotId, @RequestParam(required = true, value = "roomId") String roomId, @RequestParam(required = true, value = "reservationDate") Date reservationDate, Model model, Principal principal){
+    public @ResponseBody boolean deleteUserReservation(@RequestParam(required = true, value = "userId") String userId, @RequestParam(required = true, value = "slotId") Integer slotId, @RequestParam(required = true, value = "roomId") String roomId, @RequestParam(required = true, value = "reservationDate") Date reservationDate, Model model, Principal principal){
 
         System.out.println("Deleting reservation...");
 
-        service.deleteUserReservation(userId, slotId, roomId, reservationDate);
-
+        return service.deleteUserReservation(userId, slotId, roomId, reservationDate);
+        /*
         String username = principal.getName();
         model.addAttribute("username", username);
 
@@ -62,6 +62,8 @@ public class UserController {
 
         model.addAttribute("reservation", rId);
         return "user";
+
+         */
     }
 
 }

@@ -39,10 +39,10 @@
         </div>
     </div>
     <br><br>
-    <div id="wrapper" style="width:100%; height:100%;">
-
+    <div class="wrapper" >
+    <div class="selectRoomDiv">
         <h3 style="text-align: center">Administration Panel</h3>
-
+        <br>
         <div id="insertRoomDiv">
             <a>Insert a new Room:</a>
             <form th:action="@{/addRoom}" method="post">
@@ -63,7 +63,7 @@
                 </select>
                 <input class="confirmBut" type="submit" value="Submit"/>
             </form>
-        </div>
+        </div><br><br>
         <div  id="editRoomDiv">
             <a>Edit Room Capacity:</a>
             <form th:action="@{/editCapacity}" method="post">
@@ -85,7 +85,7 @@
                 </select>
                 <input class="confirmBut" type="submit" value="Submit"/>
             </form>
-        </div>
+        </div><br><br>
         <div id="covidDiv">
             <a>Emit a Covid-19 Notification:</a>
             <form th:action="@{/notifyCovid}" method="post">
@@ -94,11 +94,12 @@
                 </select>
                 <input class="confirmBut" type="submit" value="Notify"/>
             </form>
-        </div>
+        </div><br><br>
+    </div>
         <div class="erlangWrapper">
             <h3>Bulletin board</h3>
             <div class="board">
-                <table id="bulletinBoard">
+                <table id="bulletinBoard" class="scroll">
                     <thead>
                     <tr>
                         <th>Username</th>

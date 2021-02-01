@@ -126,12 +126,11 @@ body {
     text-align: center;
 }
 
-.board {
-    background: #dddddd;
+/*.board {
     border: 1px solid black;
     min-width: 200px;
     min-height: 400px;
-}
+}*/
 /* ============================ */
 .reservation-table-wrapper {
     width:100%;
@@ -162,6 +161,10 @@ body {
     cursor: pointer;
     opacity:1;
 }
+
+#bulletinBoard {
+    font-size: 10pt;
+}
 table {
     display: inline-block;
     border-collapse: collapse;
@@ -171,11 +174,9 @@ table {
 }
 tr {
     border-bottom: 1px solid gray;
-    /*background-color: #f5f5f5;*/
     background-color: #f1f1f1;
 }
 tr:hover {
-    /*background-color: lightsalmon;*/
     background-color: #ddd;
     cursor:pointer;
 }

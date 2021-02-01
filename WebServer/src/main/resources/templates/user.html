@@ -38,7 +38,7 @@
                     </thead>
                     <tr th:each="r: ${reservation} ">
 
-                        <td th:utext="${r.reservationDate}">.....</td>
+                        <td th:utext="${#dates.format(r.reservationDate, 'dd/MM/yyyy')}">.....</td>
                         <td th:utext="${r.roomId}">.....</td>
                         <td th:each="selectedSlot: ${r.slotId}" th:text="${slots[selectedSlot].startTime}+' - '+ ${slots[selectedSlot].endTime}">.....</td>
 
@@ -56,14 +56,16 @@
                         //var url = "/updateStatus"+"?ip="+ip+"&resource="+resource+"&status="+status;
                         //$('#listDiv').load(url);
                         $.ajax({
-                            'url' : url
+                            'url' : url,
+                            success : function(success){
+                                if(success) {
+                                    var row = elem.parentNode.parentNode;
+                                    var rowIndex = row.rowIndex;
+                                    var table = row.parentNode.parentNode;
+                                    table.deleteRow(rowIndex);
+                                }
+                            }
                         });
-
-                        var row = elem.parentNode.parentNode;
-                        var rowIndex = row.rowIndex;
-                        var table = row.parentNode.parentNode;
-                        table.deleteRow(rowIndex);
-
                     }
                 </script>
     </div>

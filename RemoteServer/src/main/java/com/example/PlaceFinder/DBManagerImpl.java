@@ -5,6 +5,7 @@ import com.example.PlaceFinder.entity.Room;
 import com.example.PlaceFinder.entity.Slot;
 import com.example.PlaceFinder.entity.User;
 import lombok.Synchronized;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
@@ -64,32 +65,6 @@ public class DBManagerImpl implements DBManager {
             entityManager.close();
         }
         return u;
-    }
-
-    @Synchronized
-    public boolean login(String username, String password) {
-        List<User> tmpUsers = null;
-        try {
-            entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
-
-            Query q = entityManager.createNativeQuery("SELECT * FROM User u WHERE u.username=? AND u.password=?", User.class);
-            q.setParameter(1, username);
-            q.setParameter(2, password);
-            tmpUsers = q.getResultList();
-
-            entityManager.getTransaction().commit();
-        }catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("A problem occurred with the login.");
-        }
-        finally {
-            entityManager.close();
-        }
-        if(tmpUsers == null) return false;
-        if(tmpUsers.get(0).getCovidNotification())
-            updateCovidNotification(tmpUsers, false);
-        return true;
     }
 
     @Synchronized
@@ -284,7 +259,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
-    @Synchronized
+    //@Synchronized
     //reserved to admin only
     public String addRoom(String idRoom, int numSeats, float capacity) {
         String result = "";
@@ -292,24 +267,24 @@ public class DBManagerImpl implements DBManager {
         r.setIdRoom(idRoom);
         r.setNumSeats(numSeats);
         r.setCapacity(capacity);
-
-        try {
-            entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
-            Room exists = entityManager.find(Room.class, idRoom);
-            if(exists != null)
-                result ="Room already registered.";
-            else {
-                entityManager.persist(r);
-                result = "Room successfully added.";
+        synchronized (this) {
+            try {
+                entityManager = factory.createEntityManager();
+                entityManager.getTransaction().begin();
+                Room exists = entityManager.find(Room.class, idRoom);
+                if (exists != null)
+                    result = "Room already registered.";
+                else {
+                    entityManager.persist(r);
+                    result = "Room successfully added.";
+                }
+                entityManager.getTransaction().commit();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                result = "A problem occurred with the room addition.";
+            } finally {
+                entityManager.close();
             }
-            entityManager.getTransaction().commit();
-        }catch (Exception ex) {
-            ex.printStackTrace();
-            result = "A problem occurred with the room addition.";
-        }
-        finally {
-            entityManager.close();
         }
         return result;
     }
@@ -330,6 +305,27 @@ public class DBManagerImpl implements DBManager {
             return false;
         }
         return true;
+    }
+
+    @Synchronized
+    public boolean deleteNotification(String username){
+        boolean result = true;
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("UPDATE User SET covidNotification = 0 WHERE username = ?;", User.class);
+            q.setParameter(1, username);
+            q.executeUpdate();
+            entityManager.getTransaction().commit();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("A problem occurred with the deleteNotification()");
+            result = false;
+        }
+        finally {
+            entityManager.close();
+        }
+        return result;
     }
 
     @Synchronized
@@ -416,7 +412,6 @@ public class DBManagerImpl implements DBManager {
             q2.setParameter(2, roomid);
             q2.executeUpdate();
             entityManager.getTransaction().commit();
-            //In seguito a riduzione capienza, delete di tutte le prenotazioni degli utenti
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("A problem occurred with the changeCapacity()");

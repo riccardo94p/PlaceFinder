@@ -18,6 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 import java.sql.Date;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
@@ -79,7 +82,7 @@ public class MainController {
         return "main";
     }
 
-    @RequestMapping("/admin")
+    @GetMapping("/admin")
     public String admin(Model model, Principal principal) {
         String username = principal.getName();
         model.addAttribute("username", username);
@@ -104,8 +107,7 @@ public class MainController {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
         service.addRoom(id, numseats, capacity);
-
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping("/editCapacity")
@@ -114,16 +116,16 @@ public class MainController {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
         service.changeCapacity(id, capacity);
-
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping("/notifyCovid")
     public String notifyCovid(Model m, @RequestParam String id) {
         //Of course this is not ideal nor secure: there is no trace of which admin performed this operation.
         //This is only meant for demonstration purposes
+
         service.notifyCovidContact(id);
-        return "admin";
+        return "redirect:/admin";
     }
 
     @RequestMapping(value = "/insertMessage")
@@ -167,14 +169,27 @@ public class MainController {
                               @RequestParam(name="selectedDate") Date date, @RequestParam(name="selectedSlot") int slot) {
         String username = auth.getName();//principal.getName();
         String role = auth.getAuthorities().toString().replaceAll("\\p{P}",""); //remove all brackets and unwanted chars
-
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
-        if(role.equals("PROF")) service.professorReservation(username,slot,id,date);
+        if(role.equals("PROF")){
+            service.professorReservation(username,slot,id,date);
+            String format = "dd/MM/yyyy";
+            DateFormat formatter = new SimpleDateFormat(format);
+            String formattedDate = formatter.format(date);
+            String message = "Professor " + username + " has reserved room " + id + " in date " + formattedDate + ". Check your reservation page.";
+            boardClient.insertMessage("System", message);
+        }
         else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);
 
         return "user";
     }
+
+    @RequestMapping("/dismissNotification")
+    @ResponseBody
+    public boolean dismissNotification(Principal principal){
+        return service.deleteNotification(principal.getName());
+    }
+
 
     //for 403 access denied page
     @RequestMapping(value = "/403", method = RequestMethod.GET)
