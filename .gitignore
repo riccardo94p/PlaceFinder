@@ -2,3 +2,7 @@ WebServer/target/
 RemoteServer/target/
 */.DS_Store
 WebServer/src/main/java/com/example/PlaceFinder/BoardClient.java
+ErlangServer/Database/
+ErlangServer/board_server.beam
+ErlangServer/db_manager.beam
+
