@@ -65,7 +65,9 @@ get_last_keys(Limit) ->
   end.
 
 % Reads messages. Limit specifies the maximum number of messages to read
-read_messages(Limit) ->
+read_messages(Limit) when Limit =< 0 ->
+  [];
+read_messages(Limit) when Limit > 0 ->
   Fun =
     fun() ->
       case get_last_keys(Limit) of
