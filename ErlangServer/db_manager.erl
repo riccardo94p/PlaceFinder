@@ -8,7 +8,7 @@ init() ->
   mnesia:create_schema([node()]),
   mnesia:start(),
   mnesia:change_table_copy_type(schema, node(), disc_copies),
-  mnesia:create_table(messages, [{attributes, record_info(fields, messages)}, {type, set}, {disc_copies, [node()]}]),
+  mnesia:create_table(messages, [{attributes, record_info(fields, messages)}, {type, ordered_set}, {disc_copies, [node()]}]),
   mnesia:create_table(ids, [{attributes, record_info(fields, ids)}, {type, set}, {disc_copies, [node()]}]).
 
 % Starts mnesia database and creates a new process to delete periodically old messages
@@ -47,15 +47,36 @@ extract_messages([H | T]) ->
   {messages,Id,Username,Time,Message} = H,
   [{Id,Username, calendar:gregorian_seconds_to_datetime(Time), Message} | extract_messages(T)].
 
+% Gets the key that is stored before the one passed as argument
+get_prev_key(0, Key) ->
+  Key;
+get_prev_key(Limit, Key) ->
+  case mnesia:prev(messages, Key) of
+    '$end_of_table' -> Key;
+    PrevKey -> get_prev_key(Limit - 1, PrevKey)
+  end
+.
+
+% Gets the first and the last keys to read that are the most recent ones
+get_last_keys(Limit) ->
+  case mnesia:last(messages) of
+    '$end_of_table' -> '$end_of_table';
+    LastKey -> {get_prev_key(Limit - 1, LastKey), LastKey}
+  end.
+
 % Reads messages. Limit specifies the maximum number of messages to read
 read_messages(Limit) ->
-  Fun = fun() ->
+  Fun =
+    fun() ->
+      case get_last_keys(Limit) of
+        '$end_of_table' -> [];
+        {FirstKey, LastKey} ->
           Query = #messages{id = '$1', username = '$2', time = '$3', message = '$4'},
-          mnesia:select(messages,[{Query, [], ['$_']}], Limit, read)
-        end,
+          mnesia:select(messages,[{Query, [{'>', '$1', FirstKey - 1}, {'<', '$1', LastKey + 1}], ['$_']}])
+      end
+    end,
   case mnesia:transaction(Fun) of
-    {atomic, {Result, _}} -> extract_messages(Result);
-    {atomic,'$end_of_table'} -> [];
+    {atomic, Result} -> extract_messages(Result);
     _ -> io:format("Error reading messages~n"),
       error
   end.
@@ -86,11 +107,17 @@ delete_message(Id) ->
   end.
 
 % Deletes all the messages in the argument list
-delete_multiple_messages([]) ->
-  ok;
-delete_multiple_messages([Id | ListIds]) ->
-  delete_message(Id),
-  delete_multiple_messages(ListIds).
+delete_multiple_messages(ListIds) ->
+  Fun =
+    fun() ->
+      Delete = fun(Id) -> mnesia:delete({messages, Id}) end,
+      lists:foreach(Delete, ListIds)
+    end,
+  case mnesia:transaction(Fun) of
+    {atomic, ok} -> success;
+    _ -> io:format("Error deleting a messages"),
+      error
+  end.
 
 % Deletes old messages
 delete_old_messages(ExpirationDelay) ->
