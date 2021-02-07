@@ -259,7 +259,7 @@ public class DBManagerImpl implements DBManager {
         return r;
     }
 
-    @Synchronized
+    //@Synchronized
     //reserved to admin only
     public String addRoom(String idRoom, int numSeats, float capacity) {
         String result = "";
