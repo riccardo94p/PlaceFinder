@@ -244,7 +244,7 @@ public class DBManagerImpl implements DBManager {
                                 "NATURAL JOIN ( SELECT T.slotId, T.roomId, T.reservationDate\n" +
                                                 "FROM Reservation T\n" +
                                                 "WHERE T.userId = ? AND\n" +
-                                                "T.reservationDate >= (CURRENT_DATE() - INTERVAL 1 WEEK )) as T) as P\n" +
+                                                "T.reservationDate >= (CURRENT_DATE() - INTERVAL 1 WEEK ) AND T.reservationDate <= CURRENT_DATE()) as T) as P\n" +
                     "ON UU.username = P.userId", User.class);
             q.setParameter(1, userId);
             r = q.getResultList();
@@ -334,7 +334,7 @@ public class DBManagerImpl implements DBManager {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("DELETE FROM Reservation r WHERE r.roomId=? AND r.reservationDate >= CURRENT_DATE()");
+            Query q = entityManager.createNativeQuery("DELETE FROM Reservation WHERE roomId=? AND reservationDate >= CURRENT_DATE()");
             q.setParameter(1, roomid);
             q.executeUpdate();
             entityManager.getTransaction().commit();

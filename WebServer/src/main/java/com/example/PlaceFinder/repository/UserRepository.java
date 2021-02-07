@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class UserRepository {
-    //User findByUsername(String username);
     @Autowired
     private ApplicationContext ctx;
     @Autowired

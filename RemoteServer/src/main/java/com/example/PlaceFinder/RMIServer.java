@@ -32,6 +32,7 @@ public class RMIServer {
             System.setSecurityManager(new SecurityManager());
 
         System.out.println("[SECURITY POLICY]: "+System.getProperty("java.security.policy"));
+        System.setProperty("java.rmi.server.hostname", "192.168.1.101");
         SpringApplication.run(RMIServer.class, args);
     }
 }

@@ -33,7 +33,7 @@ CREATE TABLE `Reservation` (
   CONSTRAINT `fk_reservation_1` FOREIGN KEY (`userId`) REFERENCES `User` (`username`),
   CONSTRAINT `fk_reservation_2` FOREIGN KEY (`slotId`) REFERENCES `Slot` (`idSlot`),
   CONSTRAINT `fk_Reservation_3` FOREIGN KEY (`roomId`) REFERENCES `Room` (`idRoom`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,7 +58,7 @@ CREATE TABLE `Room` (
   `numSeats` int DEFAULT NULL,
   `capacity` float DEFAULT '1',
   PRIMARY KEY (`idRoom`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +83,7 @@ CREATE TABLE `Slot` (
   `startTime` time DEFAULT NULL,
   `endTime` time DEFAULT NULL,
   PRIMARY KEY (`idSlot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +109,7 @@ CREATE TABLE `User` (
   `role` varchar(45) NOT NULL DEFAULT 'STUDENT',
   `covidNotification` tinyint DEFAULT '0',
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

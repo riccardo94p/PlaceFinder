@@ -172,12 +172,13 @@ public class MainController {
         System.out.println("[DBG]: /reservation of user "+username+", ROLE: "+role+" | "+id+" "+date+" "+slot);
 
         if(role.equals("PROF")){
-            service.professorReservation(username,slot,id,date);
-            String format = "dd/MM/yyyy";
-            DateFormat formatter = new SimpleDateFormat(format);
-            String formattedDate = formatter.format(date);
-            String message = "Professor " + username + " has reserved room " + id + " in date " + formattedDate + ". Check your reservation page.";
-            boardClient.insertMessage("System", message);
+            if(service.professorReservation(username,slot,id,date)){
+                String format = "dd/MM/yyyy";
+                DateFormat formatter = new SimpleDateFormat(format);
+                String formattedDate = formatter.format(date);
+                String message = "Professor " + username + " has reserved room " + id + " in date " + formattedDate + ". Check your reservation page.";
+                boardClient.insertMessage("System", message);
+            }
         }
         else if(role.equals("STUDENT")) service.userReservation(username,slot,id,date);
 

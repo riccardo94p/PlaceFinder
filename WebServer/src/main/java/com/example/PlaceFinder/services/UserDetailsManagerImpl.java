@@ -24,7 +24,7 @@ public class UserDetailsManagerImpl implements UserDetailsService {
             Set<GrantedAuthority> roles = new HashSet<>();
             roles.add(new SimpleGrantedAuthority(user.getRole()));
 
-            List<GrantedAuthority> authorities = new ArrayList<>(roles);//getUserAuthority(user.getRoles());
+            List<GrantedAuthority> authorities = new ArrayList<>(roles);
 
             return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         } else throw new UsernameNotFoundException("User "+username+" not found.");

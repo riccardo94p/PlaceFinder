@@ -7,7 +7,7 @@
 init() ->
   mnesia:create_schema([node()]),
   mnesia:start(),
-  mnesia:change_table_copy_type(schema, node(), disc_copies),
+  mnesia:change_table_copy_type(schema, node(), disc_copies), % Persistence is activated on local disk (default is in RAM)
   mnesia:create_table(messages, [{attributes, record_info(fields, messages)}, {type, ordered_set}, {disc_copies, [node()]}]),
   mnesia:create_table(ids, [{attributes, record_info(fields, ids)}, {type, set}, {disc_copies, [node()]}]).
 
@@ -50,7 +50,7 @@ extract_messages([H | T]) ->
 % Gets the key that is stored before the one passed as argument
 get_prev_key(0, Key) ->
   Key;
-get_prev_key(Limit, Key) ->
+get_prev_key(Limit, Key) -> % Takes the x-th key ahead
   case mnesia:prev(messages, Key) of
     '$end_of_table' -> Key;
     PrevKey -> get_prev_key(Limit - 1, PrevKey)
