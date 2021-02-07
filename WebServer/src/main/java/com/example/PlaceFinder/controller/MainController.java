@@ -26,43 +26,11 @@ import java.util.List;
 //-Djava.security.manager -Djava.security.policy=/home/riccardo/Scrivania/PlaceFinder/WebServer/myprogram.policy -Djava.rmi.server.codebase=http://localhost:1099/RemoteServer
 @Controller
 public class MainController {
-
-    @Autowired
-    private ApplicationContext ctx;
     @Autowired
     private DBManager service;
     @Autowired
     private BoardClient boardClient;
-
-    @GetMapping("/testconcurrentreserve")
-    public @ResponseBody void testconcurrentreserve(@RequestParam String username, @RequestParam int slotId,
-                                                @RequestParam String room, @RequestParam String dateStr) {
-        Date d = Date.valueOf(dateStr);
-        boolean result = service.userReservation(username, slotId, room, d);
-        if(result){
-            System.out.println("Numero posti: " + service.getNumReservations(d, room, slotId));
-        }
-        else {
-            System.out.println("Prenotazione fallita");
-        }
-    }
-
-    @GetMapping("/browsereservation")
-    public @ResponseBody void browsereservation() {
-        List<Reservation> r = service.browseUserReservations("aaa1");
-        for(Reservation x: r){
-            System.out.println("Reservations: " + x.getId().getReservationDate() + " - " + x.getId().getRoomId() + " - " + x.getId().getSlotId());
-        }
-    }
-
-    @GetMapping("/reserve")
-    public @ResponseBody void reserve() {
-        Date d = Date.valueOf("2021-01-27");
-        boolean result = service.userReservation("aaa1", 0, "b12", d);
-        if(result){
-            List<Reservation> r = service.browseUserReservations("aaa1");
-        }
-    }
+    int limit = 10;
 
     @RequestMapping(value="/main", method = RequestMethod.GET)
     public String main(Model model, Principal principal) {
@@ -71,7 +39,7 @@ public class MainController {
         List<Slot> slots = service.browseSlots();
         List<Room> rooms = service.getRooms();
 
-        List<Message> messages = boardClient.readMessages(10);
+        List<Message> messages = boardClient.readMessages(limit);
         messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
 
         model.addAttribute("rooms", rooms);
@@ -89,7 +57,7 @@ public class MainController {
 
         List<Room> rooms = service.getRooms();
         List<User> users = service.browseUsers();
-        List<Message> messages = boardClient.readMessages(10);
+        List<Message> messages = boardClient.readMessages(limit);
         messages.sort((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime()));
 
         model.addAttribute("rooms", rooms);

@@ -50,20 +50,6 @@ public class UserController {
         System.out.println("Deleting reservation...");
 
         return service.deleteUserReservation(userId, slotId, roomId, reservationDate);
-        /*
-        String username = principal.getName();
-        model.addAttribute("username", username);
-
-        List<Reservation> rList = service.browseUserReservations(username);
-        List<ReservationId> rId = new ArrayList<ReservationId>();
-
-        for(Reservation r : rList)
-            rId.add(r.getId());
-
-        model.addAttribute("reservation", rId);
-        return "user";
-
-         */
     }
 
 }
